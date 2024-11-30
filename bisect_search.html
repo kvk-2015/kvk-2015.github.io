@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Двоичный поиск по времени</title>
+  <style>
+   div {
+    font-family: Verdana, Arial, Helvetica, sans-serif; 
+   }
+  </style>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();
+   for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(99090627, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true
+   });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/99090627" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+</head>
+<body>
+<script type="text/javascript">
+function setCurrent(direction){
+    function formattedDate(datetime){return datetime.toLocaleString().replace(/(\d{2})\.(\d{2})\.(\d{4}),\s/, "$3-$2-$1T").replace(/:\d+$/, "")}
+    function bisect(){return Math.round((begin+end)/2)}
+    var begin = new Date(document.getElementById("begin").value).getTime()||0;
+    var end = new Date(document.getElementById("end").value).getTime()||0;
+    if(!(begin*end))return;
+    if(end<begin){
+        var temp = begin; begin = end; end = temp;
+        document.getElementById("begin").value = formattedDate(begin);
+        document.getElementById("end").value = formattedDate(end);
+    }
+    var current = bisect();
+    if(direction>0){
+        begin = current;
+        document.getElementById("begin").value = formattedDate(new Date(begin));
+    }else if(direction<0){
+        end = current;
+        document.getElementById("end").value = formattedDate(new Date(end));
+    }
+    document.getElementById("current").value = formattedDate(new Date(bisect()));
+}
+</script>
+<div align="center">
+<div align="left" style="width: 325px;">
+    Начало:&nbsp;<input type="datetime-local" id="begin" onchange="setCurrent(0)" /><br/>
+    <div style="display: flex;">
+        <div>
+            <input type="button" value="Ранее" onclick="setCurrent(-1)" />
+        </div>
+        <div style="margin: 0px 19px;">
+            <input type="datetime-local" id="current" readonly />
+        </div>
+        <div>
+            <input type="button" value="Позднее" onclick="setCurrent(1)" />
+        </div>
+    </div>
+    Конец:&nbsp;&nbsp;&nbsp;<input type="datetime-local" id="end" onchange="setCurrent(0)" /><br/>
+</div>
+<div align="center" style="width: 325px; font-size: large;">
+Калькулятор предназначен для быстрого поиска такого рода события: пусть в начале интервала наблюдения объект присутствует на видео, в конце - нет. Задача состоит определить, в какой момент времени объект пропал. Важно, что это событие носит однократный характер: до него объект на картинке есть, после - нет.
+<br />******************************<br />Видеоинструкция для компьютера: <a href="https://dzen.ru/video/watch/66f1af71a73cff7e5c396ef4">Дзен</a>, <a href="https://vk.com/video-225923287_456239023">VK Video</a>,
+<br />для смартфона так же, отличается только выбор даты и времени.
+<br /><br /><a href="https://dialogs.yandex.ru/store/skills/9e6a1702-dvoichnyj-poisk-po-vremen?utm_source=site&utm_medium=badge&utm_campaign=v1&utm_term=d1" target="_blank"><img alt="Алиса это умеет" src="https://dialogs.s3.yandex.net/badges/v1-term1.svg"/></a>
+</div>
+</div>
+</body>
+</html>
