@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+  <title>Базовая защита. Описание</title>
+  <style>
+   tr {
+    border: 4px double;
+    border-collapse: collapse;
+    font-family: Verdana, Arial, Helvetica, sans-serif; 
+   }
+   th {
+    padding: 10px;
+    border: 4px double;
+    border-collapse: collapse;
+    font-family: Verdana, Arial, Helvetica, sans-serif; 
+   }
+   td {
+    vertical-align: top;
+    padding: 10px;
+    border: 4px double;
+    border-collapse: collapse;
+    font-family: Verdana, Arial, Helvetica, sans-serif; 
+   }
+  </style>
+</head>
+<body>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();
+   for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(99090627, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true
+   });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/99090627" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+<table style="border:4px double; border-collapse: collapse; width: 80%;" align="center">
+<tbody>
+    <tr>
+        <th colspan="3" style="font-size: large;"><strong>Базовая защита, предлагаемая к включению при первоначальной настройке Яндекс Браузара для организаций в рамках <a href="https://vk.com/market/product/pomosch-s-ustanovkoy-i-nastroykoy-yandex-brauzera-dlya-organizatsiyip-225923287-9619213">услуги</a> в сообществе ВКонтакте</strong></th>
+    </tr>
+    <tr>
+        <th>Политика</th>
+        <th>Предложенный режим</th>
+        <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Подробнее&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/dns-interception-checks-enabled">DNSInterceptionChecksEnabled</a>
+        </td>
+        <td>
+            Включить проверку на перехват DNS
+        </td>
+        <td>
+            Политика включает проверки на перехват DNS-запросов. Эти проверки позволяют определить, что Браузер использует прокси-сервер, который перенаправляет запросы на неизвестные хосты.
+            Если DNS в сети настроен администратором, эти проверки могут быть лишними, так как они создают трафик DNS и HTTP при запуске и при каждом изменении настроек DNS.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/renderer-code-integrity-enabled">RendererCodeIntegrityEnabled</a>
+        </td>
+        <td>
+            Включить Renderer Code Integrity
+        </td>
+        <td>
+            Политика включает Renderer Code Integrity, который предотвращает загрузку неизвестного и потенциально опасного кода при рендеринге страниц
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/safe-browsing-protection-level">SafeBrowsingProtectionLevel</a>
+        </td>
+        <td>
+            Выбрать режим защиты Безопасного просмотра: Улучшенная защита
+        </td>
+        <td>
+            Режим Безопасного просмотра защищает пользователей от различных вредоносных и мошеннических сайтов или загрузки опасных файлов
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/third-party-blocking-enabled">ThirdPartyBlockingEnabled</a>
+        </td>
+        <td>
+            Запретить внедрять сторонний код в Браузере
+        </td>
+        <td>
+            Политика запрещает внедрять сторонний код в процессы Браузера. Другие программы не должны вмешиваться в работу Браузера.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/yandex-phishing-protection">YandexPhishingProtection</a>
+        </td>
+        <td>
+            Включить антифишинг банковских карт
+        </td>
+        <td>
+            Политика управляет <a href="https://yandex.ru/support/browser/ru/security/card-protection#off">настройкой</a> Антифишинг банковских карт
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/download-restrictions">DownloadRestrictions</a>
+        </td>
+        <td>
+            Ограничить загрузки: Блокировать загрузку вредоносных файлов (рекомендуется)
+        </td>
+        <td>
+            Блокируются известные вредоносные файлы, не блокируются потенциально опасные типы файлов <a href="https://yandex.ru/support/browser/ru/security/file-checking">Protect: проверка загружаемых файлов</a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/password-manager-enabled">PasswordManagerEnabled</a>
+        </td>
+        <td>
+            Не разрешать сохранять пароли: Браузер не сохраняет пароли
+        </td>
+        <td>
+            Политика запрещает сохранять пароли в Браузере и автоматически подставлять их при авторизации на сайтах: <a href="https://yandex.ru/support/browser/ru/security/passwords">Protect: защита паролей</a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/command-line-flag-security-warnings-enabled">CommandLineFlagSecurityWarningsEnabled</a>
+        </td>
+        <td>
+            Включить предупреждения об опасных параметрах командной строки
+        </td>
+        <td>
+            Если пользователи запускают Браузер с потенциально опасными параметрами, они должны видеть предупреждение о возможной проблеме безопасности.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/disable-safe-browsing-proceed-anyway">DisableSafeBrowsingProceedAnyway</a>
+        </td>
+        <td>
+            Запретить переход со страницы предупреждения Безопасного просмотра
+        </td>
+        <td>
+            Отключить кнопку <strong>Игнорировать это предупреждение</strong>. Пользователи не должны переходить на страницы с потенциально вредоносным содержимым.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/globally-scope-http-auth-cache-enabled">GloballyScopeHTTPAuthCacheEnabled</a>
+        </td>
+        <td>
+            Выключить глобальное использование кеша на HTTP-серверах
+        </td>
+        <td>
+            Политика запрещает использование кеша с одного HTTP-сервера для авторизации на других HTTP-серверах, поскольку это делает сайты более уязвимыми для межсайтовых атак; дает возможность отслеживать переходы пользователей между сайтами без использования файлов cookie; может привести к утечке конфиденциальной информации.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/audio-sandbox-enabled">AudioSandboxEnabled</a>
+        </td>
+        <td>
+            Разрешить использовать тестовую среду для аудио
+        </td>
+        <td>
+            Политика управляет обработкой аудио в тестовой среде. Включена обработка аудио в тестовой среде. Это позволяет избежать возможной утечки данных, если сайт некорректно использует аудио. Если настройки безопасности ПО мешают работе тестовой среды, ее можно отключить
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/background-mode-enabled">BackgroundModeEnabled</a>
+        </td>
+        <td>
+            Запретить Браузеру работать в фоновом режиме
+        </td>
+        <td>
+            Отключен фоновый режим. Иначе уязвимые или вредоносные плагины, приложения и процессы могут продолжать работать даже после закрытия Браузера.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/chrome-variations">ChromeVariations</a>
+        </td>
+        <td>
+            Разрешить модификации Браузера
+        </td>
+        <td>
+            Политика управляет модификациями Браузера, с помощью которых можно включать или отключать функции Браузера без установки новой версии приложения. Модификации позволяют опробовать обновления безопасности и новые функции до их официального выхода. Чтобы откатить функции при появлении проблем, достаточно перезагрузить компьютер.
+        </td>
+    </tr>
+    <tr style="border:4px double; border-collapse: collapse;">
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/enable-media-router">EnableMediaRouter</a>
+        </td>
+        <td>
+            Политика отключает Google Cast
+        </td>
+        <td>
+            Отключен Google Cast, чтобы не отправлять содержимое вкладок или рабочего стола на недоверенные устройства в локальной сети.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/hardware-acceleration-mode-enabled">HardwareAccelerationModeEnabled</a>
+        </td>
+        <td>
+            Использовать аппаратное ускорение
+        </td>
+        <td>
+            Политика включает или отключает аппаратное ускорение в Браузере и запрещает пользователям менять этот параметр. Аппаратное ускорение используется, если оно поддерживается конфигурацией устройства.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/media-router-cast-allow-all-ips">MediaRouterCastAllowAllIPs</a>
+        </td>
+        <td>
+            Запретить подключаться к устройствам Google Cast на всех IP-адресах
+        </td>
+        <td>
+            Политикой запрещено, чтобы гарантировать подключение только к частным адресам. Подключение Google Cast к публичным IP-адресам угрожает безопасности конфиденциальных данных.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/network-prediction-options">NetworkPredictionOptions</a>
+        </td>
+        <td>
+            Отключить предзагрузку сайтов
+        </td>
+        <td>
+            Политика запрещает предзагрузку регулярно посещаемых сайтов: DNS, подключение по протоколам TCP и SSL, отображение страниц. Так сократится количество подключений, через которые можно атаковать. Также не будет взаимодействия с сайтами, которые пользователи не собирались открывать.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/web-rtc-ip-handling">WebRtcIPHandling</a>
+        </td>
+        <td>
+            Задать правило обработки IP-адресов через WebRTC: По умолчанию (передаётся только публичный IP)
+        </td>
+        <td>
+            Запрещено передавать частные IP. Доступ к IP-адресам позволяет собирать информацию о внутренней сети. Это может быть использовано для взлома и обхода сети.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/alternate-error-pages-enabled">AlternateErrorPagesEnabled</a>
+        </td>
+        <td>
+            Выключить альтернативные страницы с ошибками
+        </td>
+        <td>
+            Отключены альтернативные страницы ошибок. Их использование может привести к утечке информации о посещаемом сайте. <strong>Возможные проблемы</strong>: Браузер не сможет использовать альтернативные страницы ошибок.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/application-locale-value">ApplicationLocaleValue</a>
+        </td>
+        <td>
+            Задать язык интерфейса: русский
+        </td>
+        <td>
+            Пользователи не могут изменить язык в настройках Браузера.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/allow-deleting-browser-history">AllowDeletingBrowserHistory</a>
+        </td>
+        <td>
+            Запретить удаление истории просмотров и загрузок
+        </td>
+        <td>
+            Запрещено пользователям удалять историю просмотров и загрузок. Так они не смогут скрыть просмотр запрещенных или вредоносных сайтов.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/autofill-address-enabled">AutofillAddressEnabled</a>
+        </td>
+        <td>
+            Выключить автозаполнение адресов
+        </td>
+        <td>
+            Отключено автозаполнение адресов. Злоумышленники могут украсть эти данные, если получат доступ к компьютеру пользователя. <strong>Возможные проблемы</strong>: Пользователям будет недоступно автозаполнение.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/autofill-credit-card-enabled">AutofillCreditCardEnabled</a>
+        </td>
+        <td>
+            Выключить автозаполнение реквизитов банковских карт
+        </td>
+        <td>
+            Отключено автозаполнение реквизитов банковских карт. Злоумышленники могут украсть эти данные, если получат доступ к компьютеру пользователя. <strong>Возможные проблемы</strong>: Пользователям будет недоступно автозаполнение.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/block-third-party-cookies">BlockThirdPartyCookies</a>
+        </td>
+        <td>
+            Блокировать сторонние cookie
+        </td>
+        <td>
+            Запрещено сохранять cookie элементам веб-страниц из других доменов. Сторонние cookie могут нарушать конфиденциальность и отслеживать действия пользователей. <strong>Возможные проблемы</strong>: Могут перестать работать офисные приложения и другие продукты, которые используют cookie. В таком случае отключите политику при помощи YandexBrowser_Разрешить_сторонние_куки.reg.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/force-ephemeral-profiles">ForceEphemeralProfiles</a>
+        </td>
+        <td>
+            Выключить временные профили
+        </td>
+        <td>
+            Отключены временные профили. Если удалять данные после каждого сеанса, расследовать киберпреступления будет трудно.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/saving-browser-history-disabled">SavingBrowserHistoryDisabled</a>
+        </td>
+        <td>
+            Разрешить сохранять историю просмотров
+        </td>
+        <td>
+            Политика настроена так, чтобы сохранять историю просмотров. Это может пригодиться в расследовании киберпреступлений.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/default-geolocation-setting">DefaultGeolocationSetting</a>
+        </td>
+        <td>
+            Запретить определять местоположение
+        </td>
+        <td>
+            Включен режим <strong>Запретить определять местоположение</strong>. Информация о местоположении может нарушить конфиденциальность пользователя и привести к утечке информации о сетевой инфраструктуре вокруг устройства. <strong>Возможные проблемы</strong>: Браузер перестанет отправлять данные о близлежащих точках доступа Wi-Fi или узлах сотовой связи (даже если пользователи ими не пользуются) и IP-адрес компьютера.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/allow-cross-origin-auth-prompt">AllowCrossOriginAuthPrompt</a>
+        </td>
+        <td>
+            Запретить показывать окна авторизации через изображения
+        </td>
+        <td>
+            Запрещено изображениям показывать окно авторизации, чтобы защититься от фишинга.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/auth-schemes">AuthSchemes</a>
+        </td>
+        <td>
+            Заданы схемы аутентификации: <strong>ntlm</strong>, <strong>negotiate</strong>
+        </td>
+        <td>
+            Выбраны значения <strong>ntlm</strong> и <strong>negotiate</strong>, потому что в них поддерживается встроенная аутентификация. Значения <strong>basic</strong>, <strong>digest</strong> не обеспечивают достаточной защиты: например, сайты могут отправлять пароли обычным текстом, в незашифрованном виде. <strong>Возможные проблемы</strong>: Могут некорректно работать устаревшие веб-приложения или сайты, которые используют небезопасные схемы
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/component-updates-enabled">ComponentUpdatesEnabled</a>
+        </td>
+        <td>
+            Разрешить обновлять компоненты Браузера
+        </td>
+        <td>
+            Включена политика, чтобы поддерживать компоненты Браузера в актуальном состоянии — это влияет на безопасность.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/site-per-process">SitePerProcess</a>
+        </td>
+        <td>
+            Запускать вкладки в отдельных процессах
+        </td>
+        <td>
+            Включена политика, чтобы повысить безопасность. Даже если сайт обходит защиту, он не сможет украсть данные с другого сайта. <strong>Возможные проблемы</strong>: Запуск каждого сайта в отдельном процессе потребует больше оперативной памяти для Браузера, что может ухудшить производительность системы.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/browser-network-time-queries-enabled">BrowserNetworkTimeQueriesEnabledSitePerProcess</a>
+        </td>
+        <td>
+            Разрешить отправлять запросы в службу времени Google
+        </td>
+        <td>
+            Разрешено отправлять запросы в службу времени Google. Это позволит Браузеру проверять срок действия и подлинность сертификатов.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/block-external-extensions">BlockExternalExtensions</a>
+        </td>
+        <td>
+            Блокировать установку расширений вне Браузера
+        </td>
+        <td>
+            Запрещена установка расширений вне Браузера. Пользователи могут случайно или намеренно установить вредоносные расширения. <strong>Возможные проблемы</strong>: Установка расширений вне Браузера недоступна.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/auto-play-allowed">AutoplayAllowed</a>
+        </td>
+        <td>
+            Не разрешать автоматическое воспроизведение видео
+        </td>
+        <td>
+            Автовоспроизведение запрещено для файлов и на всех сайтах, кроме заданных в политике AutoplayAllowlist (не задан в базовой настройке). Некоторые сайты сами управляют автовоспроизведением
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://yandex.ru/support2/browser-corporate/ru/policy/enable-online-revocation-checks">EnableOnlineRevocationChecks</a>
+        </td>
+        <td>
+            Выключить онлайн-проверки OCSP и CRL
+        </td>
+        <td>
+            Отключены проверки. Они и так выполняются в ОС вне зависимости от настроек Браузера. А злоумышленники могут блокировать трафик по OCSP, чтобы спровоцировать поведение soft-fail. К тому же таким образом в центры сертификации могут передаваться сведения о посещаемых сайтах и источниках запросов.
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3" style="font-size: large; padding: 10px; border:4px double; border-collapse: collapse;" align="center"><strong>Если заметили неточность или отсутствие какой-то обязательной защиты или наоборот излишние ограничения, сообщите в сообщество ВКонтакте <a href="https://vk.com/kvk2023">С точки зрения бывшего сисадмина</a></strong></th>
+    </tr>
+</tbody>
+</table>
+</body>
+</html>
