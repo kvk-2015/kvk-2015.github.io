@@ -1,8 +1,8 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://smotrim.ru/video/2931861
-set template=M2.%%(title)s [%%(id)s].%%(ext)s
+set VideoURL=https://smotrim.ru/video/2931092
+set template=%%(title)s [%%(id)s].%%(ext)s
 set format=b
 set extension=mov
 set AppPath=D:\kvk\Utilities\GitHub\yt-dlp\yt-dlp.cmd
@@ -20,4 +20,4 @@ call %AppPath% --socket-timeout 45 --print formats_table %%VideoURL%% >> "%filen
 if not errorlevel 0 exit /b
 if -%1- == ---- exit /b
 rem --limit-rate 8.5M
-start "yt-dlp: %VideoURL%" %AppPath% -o "%template%" --split-chapters --video-multistreams --audio-multistreams --windows-filenames --remux-video %extension% --concurrent-fragments 10 --socket-timeout 45 --abort-on-unavailable-fragment --exec "pause " --embed-metadata --format %format% %VideoURL%
+start "yt-dlp: %VideoURL%" %AppPath% -o "%template%" --split-chapters --video-multistreams --audio-multistreams --windows-filenames --remux-video %extension% --concurrent-fragments 10 --socket-timeout 45 --abort-on-unavailable-fragment --exec "(pause  & exit /b)" --embed-metadata --format %format% %VideoURL%
