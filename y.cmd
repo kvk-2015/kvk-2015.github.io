@@ -6,7 +6,7 @@ set template=M2.%%(title)s [%%(id)s].%%(ext)s
 set format=b
 set extension=mov
 set AppPath=D:\kvk\Utilities\GitHub\yt-dlp\yt-dlp.cmd
-if not exist %AppPath% set AppPath=yt-dlp
+if not exist %AppPath% set AppPath=yt-dlp.exe
 if not -%1- == -- set format=%1
 set tempFileName=%random%.tmp
 call %AppPath% -o "%%template:.!=%%" --windows-filenames --socket-timeout 45 --print-to-file filename %%tempFileName%% --skip-download %%VideoURL%%
