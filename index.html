@@ -8,19 +8,23 @@
     text-align: center;
     font-family: Verdana, Arial, Helvetica, sans-serif; 
    }
-   img {
+   ol {
+    margin: 0px;    
+   }
+   li {
+    text-align: left;
+   }
+   .qr_code {
     width: 325px;
     height: 325px;
    }
-   li {
-       text-align: left;
-   }
    .bage {
-    text-align: center;
+    text-align: left;
+    line-height: 49px;
    }
    .bage_img {
     width: 130px;
-    height: 130px;
+    vertical-align: middle;
    }
    .img_vk {
     width: 422px;
@@ -71,36 +75,35 @@
 <div class="the_page">
 <div class="central_block">
 <h1>Список ресурсов, где отражены некоторые мои интересы</h1>
-<br>GitHub: <a href="https://github.com/kvk-2015/">Konstantin Kulakov (kvk-2015)</a>
+GitHub: <a href="https://github.com/kvk-2015/">Konstantin Kulakov (kvk-2015)</a>
 <br>Хабр: <a href="https://habr.com/ru/users/kvk-2019/">Константин Кулаков (kvk-2019)</a>
 <br>************************************************************
-<br>Дзен: <a href="https://dzen.ru/kvk2023">Константин Кулаков (kvk2023)</a>,
+Дзен: <a href="https://dzen.ru/kvk2023">Константин Кулаков (kvk2023)</a>,
 <br><a href="https://dzen.ru/suite/9e0c4545-b252-42c8-9b6d-da5ccb34204c">Безопасность компьютера и смартфона</a>,
 <br><a href="https://dzen.ru/a/Y85QP0Z2anPS-UOX">Немного о себе, принципах, состоянии здоровья и финансов</a>,
 <br>************************************************************
-<br>Сообщество ВКонтакте: <a href="https://vk.com/kvk2023">С точки зрения бывшего сисадмина</a>
+Сообщество ВКонтакте: <a href="https://vk.com/kvk2023">С точки зрения бывшего сисадмина</a>
 <br><a href="https://vk.com/kvk2023"><img class="img_vk" src="./logo_kvk2023.png" alt="VK: @kvk2023"></a>
 <br>VK Video: <a href="https://vkvideo.ru/@kvk2023">С точки зрения бывшего сисадмина</a>
 <br><a href="https://dzen.ru/video/watch/66f9b302687c6e197ab441cc"><img class="img_ping" alt="Screenshot: pinger.js -t google.com" src="./2025-02-08%2021-29-11%20C%20%20Windows%20System32%20cmd.exe%20-%20cscript%20%20pinger.js%20%20-t%20google.com.jpg"></a>
 <br>YouTube: <a href="https://youtube.com/@kvk_2023">Константин Кулаков</a>
 <br><a href="./y.cmd">Батник</a> для скачивания видео посредством yt-dlp. Перед запуском отредактируйте, настроив параметры (<strong>FFmpeg.exe</strong> установлен и добавлен у меня в переменную окружения <strong>%FFmpegPath%</strong> и <strong>%PATH%</strong> {можно создать связь каталогов для папки <strong>bin</strong>, символическая ссылка тоже подойдёт, но требует повышения прав}, <a href="https://dzen.ru/suite/5941ade7-3aff-45c5-a2a2-8a9294c3f91d">подробнее</a>).
 <br>************************************************************
-<br><a href="https://disk.yandex.ru/i/PxXjb1BG1ogO4Q">Документ .pdf</a> в облаке, где демонстрирую некоторые умения в системе микроэлектронного управления электрооборудованием квартиры и написания инструкций и регламентов :)
+<a href="https://disk.yandex.ru/i/PxXjb1BG1ogO4Q">Документ .pdf</a> в облаке, где демонстрирую некоторые умения в системе микроэлектронного управления электрооборудованием квартиры и написания инструкций и регламентов :)
 <br>************************************************************
-<br><strong>Навыки Алисы, голосового помощника от Яндекса:</strong>
-<ol><li>Трансляция сигналов точного времени <div class="bage"><a href="https://dialogs.yandex.ru/store/skills/f27e7003-signaly-tochnogo-vremen?utm_source=site&utm_medium=badge&utm_campaign=v1&utm_term=d1" target="_blank"><img class="bage_img" alt="Алиса это умеет" src="https://dialogs.s3.yandex.net/badges/v1-term1.svg"/></a></div>
-<ul><li><a href="https://vkvideo.ru/video-225923287_456239025">видео как запустить c сайта Dropbox предложенный файл .url</a></li>
+<strong>Навыки Алисы, голосового помощника от Яндекса:</strong>
+<ol><li>Трансляция сигналов точного времени<ul><li><div class="bage"><a href="https://dialogs.yandex.ru/store/skills/f27e7003-signaly-tochnogo-vremen?utm_source=site&utm_medium=badge&utm_campaign=v1&utm_term=d1" target="_blank"><img class="bage_img" alt="Алиса это умеет" src="https://dialogs.s3.yandex.net/badges/v1-term1.svg"/></a></div></li>
+<li><a href="https://vkvideo.ru/video-225923287_456239025">видео как запустить c сайта Dropbox предложенный файл .url</a></li>
 <li><a href="./for_adjusting_the_time.html">(суть, опубликовано в репозитории)</a></li></ul></li>
-<li>Двоичный поиск по времени <div class="bage"><a href="https://dialogs.yandex.ru/store/skills/9e6a1702-dvoichnyj-poisk-po-vremen?utm_source=site&utm_medium=badge&utm_campaign=v1&utm_term=d1" target="_blank"><img class="bage_img" alt="Алиса это умеет" src="https://dialogs.s3.yandex.net/badges/v1-term1.svg"/></a></div>
-<ul><li>запуск такой же</li>
-<li><a href="./bisect_search.html">(суть, опубликовано в репозитории)</a></li></ul></li>
-</ol>
+<li>Двоичный поиск по времени<ul><li><div class="bage"><a href="https://dialogs.yandex.ru/store/skills/9e6a1702-dvoichnyj-poisk-po-vremen?utm_source=site&utm_medium=badge&utm_campaign=v1&utm_term=d1" target="_blank"><img class="bage_img" alt="Алиса это умеет" src="https://dialogs.s3.yandex.net/badges/v1-term1.svg"/></a></div></li>
+<li>запуск такой же</li>
+<li><a href="./bisect_search.html">(суть, опубликовано в репозитории)</a></li></ul></li></ol>
 <br>************************************************************
-<br><a href="./Konstantin_Kulakov_0xDD13C867_public_2025-01-05.asc">GnuPG public key</a> <a href="./Konstantin_Kulakov_0xDD13C867_public_fingerprint.txt">fingerprint</a>
+<a href="./Konstantin_Kulakov_0xDD13C867_public_2025-01-05.asc">GnuPG public key</a> <a href="./Konstantin_Kulakov_0xDD13C867_public_fingerprint.txt">fingerprint</a>
 <br><a href="https://github.com/kvk-2015/kvk-2015.github.io/tree/main/Некоторые%20отсоединённые%20GnuPG%20подписи">Некоторые отсоединённые GnuPG подписи (.sig)</a>
 <br>************************************************************
-<br>Контакты: <a href="https://bit.ly/m/Konstantin-Kulakov">Константин Кулаков</a>
-<br><a href="https://bit.ly/m/Konstantin-Kulakov"><img class="align_center" alt="Konstantin Kulakov" src="./bit.ly_m_Konstantin-Kulakov.png"></a>
+Контакты: <a href="https://bit.ly/m/Konstantin-Kulakov">Константин Кулаков</a>
+<br><a href="https://bit.ly/m/Konstantin-Kulakov"><img class="align_center qr_code" alt="Konstantin Kulakov" src="./bit.ly_m_Konstantin-Kulakov.png"></a>
 </div>
 </div>
 </body>
