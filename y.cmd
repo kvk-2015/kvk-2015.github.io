@@ -1,8 +1,8 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://smotrim.ru/video/2943847
-set template=M1.%%(title)s [%%(id)s].%%(ext)s
+set VideoURL=https://vk.com/video-21732035_456241093
+set template=%%(title)s [%%(id)s].%%(ext)s
 set format=b
 set extension=mov
 set AppPath=D:\kvk\Utilities\GitHub\yt-dlp\yt-dlp.cmd
@@ -24,6 +24,6 @@ call :size "%filename%"
 if %tempsize% == %filesize% exit /b
 if -%1- == ---- exit /b
 rem --limit-rate 8.5M
-start "yt-dlp: %VideoURL%" %AppPath% -o "%template%" --split-chapters --video-multistreams --audio-multistreams --windows-filenames --remux-video %extension% --concurrent-fragments 10 --socket-timeout 45 --abort-on-unavailable-fragment --exec "pause " --embed-metadata --format %format% %VideoURL% ^&exit/b
+start "yt-dlp: %VideoURL%" %AppPath% -o "%template%" --split-chapters --postprocessor-args "SplitChapters+ffmpeg:-map_metadata -1" --video-multistreams --audio-multistreams --windows-filenames --remux-video %extension% --concurrent-fragments 10 --socket-timeout 45 --abort-on-unavailable-fragment --exec "pause " --embed-metadata --format %format% %VideoURL% ^&exit/b
 :size
 set filesize=%~z1
