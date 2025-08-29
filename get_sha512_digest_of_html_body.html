@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+  <title>Get sha-512 digest of html body</title>
+  <style>
+  label {
+    display: block;
+    margin-bottom: 10px;
+  }
+  </style>
+  <script>
+  async function digestMessage(message) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(message);
+    const hashBuffer = await crypto.subtle.digest("SHA-512", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+    return hashHex;
+  }
+  function sha512(){
+      digestMessage(document.getElementById("html_body").value.replace(/^[\s\S]*(<body>[\s\S]*<\/body>)[\s\S]*$/, "$1")).then((hashHex) =>
+          alert("sha-512: " + (document.getElementById("result").value = hashHex) + "\n\n by " + sha512 + "\n and " + digestMessage + "\n\n(where newline character is in UNIX format - LF)"),);
+  }
+  </script>
+</head>
+<body>
+<label for="html_body"><strong>Your HTML:</strong></label>
+<textarea id="html_body" name="html_body" rows="25" cols="138">
+</textarea>
+<br><button name="button" onClick="sha512()">Get SHA-512</button>
+<input name="result" id="result" type="text" size="128">
+</body>
+</html>
