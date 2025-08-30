@@ -1,12 +1,24 @@
 ﻿<!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="utf-8">
   <title>Get sha-512 digest of html body</title>
   <style>
+   html {
+    font-family: Verdana, Arial, Helvetica, sans-serif; 
+  }
   label {
     display: block;
     margin-bottom: 10px;
+  }
+  div {
+    display: flex;
+    align-items: flex-start;
+    float: left;
+    margin-right: 20px;
+  }
+  fieldset {
+    width: 1004px;
   }
   </style>
   <script>
@@ -21,15 +33,29 @@
     return hashHex;
   }
   function sha512(){
-      digestMessage(document.getElementById("html_body").value.replace(/^[\s\S]*(<body>[\s\S]*<\/body>)[\s\S]*$/, "$1")).then((hashHex) =>
-          alert("sha-512: " + (document.getElementById("result").value = hashHex) + "\n\n by " + sha512 + "\n and " + digestMessage + "\n\n(where newline character is in UNIX format - LF)"),);
+    var data = document.getElementById("html").value;
+    if(document.getElementById("body").checked) data = data.replace(/^[\s\S]*(<body>[\s\S]*<\/body>)[\s\S]*$/, "$1");
+    else if(document.getElementById("all").checked) data = data.replace(/^[\s\S]*(<html>[\s\S]*<\/html>)[\s\S]*$/, "$1");
+    digestMessage(data).then((hashHex) =>
+        alert("sha-512: " + (document.getElementById("result").value = hashHex) + "\n\n by " + sha512 + "\n and " + digestMessage + "\n\n(where newline character is in UNIX format - LF)"),);
   }
   </script>
 </head>
 <body>
-<label for="html_body"><strong>Your HTML:</strong></label>
-<textarea id="html_body" name="html_body" rows="25" cols="138">
+<label for="html"><strong>Your HTML:</strong></label>
+<textarea id="html" name="html" rows="25" cols="138">
 </textarea>
+<fieldset>
+  <legend>Select the area for SHA-512 calculation:</legend>
+  <div>
+    <input type="radio" id="body" name="digest_area" value="body" checked>
+    <label for="body">HTML body only (without scripts)</label>
+  </div>
+  <div>
+    <input type="radio" id="all" name="digest_area" value="all">
+    <label for="all">All HTML with scripts, as for pages on some websites, that are embedded in an iframe</label>
+  </div>
+</fieldset>
 <br><button name="button" onClick="sha512()">Get SHA-512</button>
 <input name="result" id="result" type="text" size="128">
 </body>
