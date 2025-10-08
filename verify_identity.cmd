@@ -4,7 +4,8 @@ setlocal
 set sigstoreName=%1
 set distrName=%sigstoreName:.sigstore=%
 if -%1- == -%distrName%- exit /b
-call :test "[^0-9]3\.14[^0-9]"      "hugo@python.org"       "https://github.com/login/oauth"
+call :test "[^0-9]3\.1[67][^0-9]"   "savannah@python.org"   "https://github.com/login/oauth"
+call :test "[^0-9]3\.1[45][^0-9]"   "hugo@python.org"       "https://github.com/login/oauth"
 call :test "[^0-9]3\.1[23][^0-9]"   "thomas@python.org"     "https://accounts.google.com"
 call :test "[^0-9]3\.1[01][^0-9]"   "pablogsal@python.org"  "https://accounts.google.com"
 call :test "[^0-9]3\.[89][^0-9]"    "lukasz@langa.pl"       "https://github.com/login/oauth"
