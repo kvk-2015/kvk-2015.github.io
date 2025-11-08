@@ -46,9 +46,9 @@ goto:eof */
 var fso = new ActiveXObject("Scripting.FileSystemObject");
 if(WSH.Arguments.Unnamed.Count && fso.FileExists(fName=WSH.Arguments.Unnamed(0))){
     with(new ActiveXObject("ADODB.Stream")){Type=2; Mode=3; Open(); Charset="UTF-8"; LoadFromFile(fName);
-        Position=0; var newName=ReadText().replace(/\s*$/, "");
+        Position=0; var newName=ReadText().replace(/\s*$/, ""); Close();
         if(isTemp=/^\d+\.tmp$/.test(fName))newName = newName.replace(/\(/g, "{").replace(/\)/g, "}");
         fso.DeleteFile(fName);
-        Position=0; WriteText(newName); SaveToFile(fName); Close();
+        Open(); Charset="UTF-8"; Position=0; WriteText(newName + (isTemp ? "" : "\r\n")); SaveToFile(fName); Close();
     }
 }
