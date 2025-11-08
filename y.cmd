@@ -2,7 +2,7 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://smotrim.ru/video/3043739
+set VideoURL=https://smotrim.ru/video/3044168
 set head=
 set suffix=
 set series=%%(series)s. 
@@ -45,13 +45,10 @@ goto:eof */
 
 var fso = new ActiveXObject("Scripting.FileSystemObject");
 if(WSH.Arguments.Unnamed.Count && fso.FileExists(fName=WSH.Arguments.Unnamed(0))){
-    with(fso.OpenTextFile(fName, 1, -2)){
-        newName = ReadAll().replace(/\s*$/, "");
+    with(new ActiveXObject("ADODB.Stream")){Type=2; Mode=3; Open(); Charset="UTF-8"; LoadFromFile(fName);
+        Position=0; var newName=ReadText().replace(/\s*$/, "");
         if(isTemp=/^\d+\.tmp$/.test(fName))newName = newName.replace(/\(/g, "{").replace(/\)/g, "}");
-        Close();
-    }
-    with(fso.OpenTextFile(fName, 2, -2)){
-        if(isTemp)Write(newName);
-        else WriteLine(newName);
+        fso.DeleteFile(fName);
+        Position=0; WriteText(newName); SaveToFile(fName); Close();
     }
 }
