@@ -1,7 +1,8 @@
+@set @x=0 /*
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://smotrim.ru/video/3019278
+set VideoURL=https://smotrim.ru/video/3043739
 set head=
 set suffix=
 set series=%%(series)s. 
@@ -15,6 +16,7 @@ set tempFileName=%random%.tmp
 call %AppPath% -o "%%template:.!=%%" --windows-filenames --socket-timeout 45 --print-to-file filename %%tempFileName%% --skip-download %%VideoURL%%
 if not errorlevel 0 if exist %tempFileName% del /q %tempFileName%
 if not exist %tempFileName% exit /b
+cscript /nologo /e:javascript %0 %tempFileName%
 set /p filename=<%tempFileName%
 set filename_without_series=%filename:NA. =%
 if not "%filename_without_series%" == "%filename%" (set series=& call :set_template & set filename=%filename_without_series%)
@@ -38,3 +40,10 @@ set template=%head%%series%%%(title)s [%%(id)s]%suffix%.%%(ext)s
 exit /b
 :size
 set filesize=%~z1
+goto:eof */
+
+var fso = new ActiveXObject("Scripting.FileSystemObject");
+if(fso.FileExists(fName=WSH.Arguments.Unnamed(0))){
+    newName = (inp=fso.OpenTextFile(fName, 1, -2)).ReadAll().replace(/\s*$/, "").replace(/\(/g, "{").replace(/\)/g, "}"); inp.Close();
+    fso.OpenTextFile(fName, 2, -2).Write(newName);
+}
