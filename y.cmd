@@ -2,8 +2,8 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://smotrim.ru/video/3044168
-set head=
+set VideoURL=https://www.ntv.ru/peredacha/svoya_igra/m58980/o819452
+set head=J6.
 set suffix=
 set series=%%(series)s. 
 call :set_template
@@ -33,6 +33,7 @@ call %AppPath% --socket-timeout 45 --print formats_table %%VideoURL%% >> "%filen
 if not errorlevel 0 exit /b
 call :size "%filename%"
 if %tempsize% == %filesize% exit /b
+cscript /nologo /e:javascript %0 "%filename%"
 if -%1- == ---- exit /b
 rem --limit-rate 8.5M
 start "yt-dlp: %VideoURL%" %AppPath% -o "%template%" --split-chapters --postprocessor-args "SplitChapters+ffmpeg:-map_metadata -1" --video-multistreams --audio-multistreams --windows-filenames --remux-video %extension% --concurrent-fragments 10 --socket-timeout 45 --abort-on-unavailable-fragment --exec "pause " --embed-metadata --format %format% %VideoURL% ^&exit/b
@@ -47,7 +48,7 @@ var fso = new ActiveXObject("Scripting.FileSystemObject");
 if(WSH.Arguments.Unnamed.Count && fso.FileExists(fName=WSH.Arguments.Unnamed(0))){
     with(new ActiveXObject("ADODB.Stream")){Type=2; Mode=3; Open(); Charset="UTF-8"; LoadFromFile(fName);
         Position=0; var newName=ReadText().replace(/\s*$/, ""); Close();
-        if(isTemp=/^\d+\.tmp$/.test(fName))newName = newName.replace(/\(/g, "{").replace(/\)/g, "}");
+        newName = ((isTemp=/^\d+\.tmp$/.test(fName)) ? newName.replace(/\(/g, "{").replace(/\)/g, "}") : newName.replace(/\r\n|\n/g, "\r\n"));
         fso.DeleteFile(fName);
         Open(); Charset="UTF-8"; Position=0; WriteText(newName + (isTemp ? "" : "\r\n")); SaveToFile(fName); Close();
     }
