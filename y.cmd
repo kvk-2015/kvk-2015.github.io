@@ -25,6 +25,7 @@ set filename=!filename:.mp4=.%extension%!
 set filename=!filename:.webm=.%extension%!.txt
 setlocal disabledelayedexpansion
 echo %VideoURL% > "%filename%" && del /q %tempFileName%
+cscript /nologo /e:javascript %0 "%filename%"
 echo.>> "%filename%"
 call :size "%filename%"
 set tempsize=%filesize%
@@ -43,7 +44,14 @@ set filesize=%~z1
 goto:eof */
 
 var fso = new ActiveXObject("Scripting.FileSystemObject");
-if(fso.FileExists(fName=WSH.Arguments.Unnamed(0))){
-    newName = (inp=fso.OpenTextFile(fName, 1, -2)).ReadAll().replace(/\s*$/, "").replace(/\(/g, "{").replace(/\)/g, "}"); inp.Close();
-    fso.OpenTextFile(fName, 2, -2).Write(newName);
+if(WSH.Arguments.Unnamed.Count && fso.FileExists(fName=WSH.Arguments.Unnamed(0))){
+    with(fso.OpenTextFile(fName, 1, -2)){
+        newName = ReadAll().replace(/\s*$/, "");
+        if(isTemp=/^\d+\.tmp$/.test(fName))newName = newName.replace(/\(/g, "{").replace(/\)/g, "}");
+        Close();
+    }
+    with(fso.OpenTextFile(fName, 2, -2)){
+        if(isTemp)Write(newName);
+        else WriteLine(newName);
+    }
 }
