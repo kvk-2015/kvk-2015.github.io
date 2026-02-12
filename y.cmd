@@ -2,8 +2,8 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://www.ntv.ru/peredacha/svoya_igra/m58980/o819452
-set head=J6.
+set VideoURL=https://smotrim.ru/video/1979922
+set head=
 set suffix=
 set series=%%(series)s. 
 call :set_template
@@ -16,8 +16,10 @@ set tempFileName=%random%.tmp
 call %AppPath% -o "%%template:.!=%%" --windows-filenames --socket-timeout 45 --print-to-file filename %%tempFileName%% --skip-download %%VideoURL%%
 if not errorlevel 0 if exist %tempFileName% del /q %tempFileName%
 if not exist %tempFileName% exit /b
-cscript /nologo /e:javascript %0 %tempFileName%
+cscript /nologo /e:javascript "%~dpnx0" %tempFileName%
 set /p filename=<%tempFileName%
+set processed_series=%filename:!.=!%
+if not "%processed_series%" == "%filename%" (setlocal enabledelayedexpansion & set series=!series:~0,-2! & setlocal disabledelayedexpansion & call :set_template & set filename=%processed_series%)
 set filename_without_series=%filename:NA. =%
 if not "%filename_without_series%" == "%filename%" (set series=& call :set_template & set filename=%filename_without_series%)
 setlocal enabledelayedexpansion
@@ -25,7 +27,7 @@ set filename=!filename:.mp4=.%extension%!
 set filename=!filename:.webm=.%extension%!.txt
 setlocal disabledelayedexpansion
 echo %VideoURL% > "%filename%" && del /q %tempFileName%
-cscript /nologo /e:javascript %0 "%filename%"
+cscript /nologo /e:javascript "%~dpnx0" "%filename%"
 echo.>> "%filename%"
 call :size "%filename%"
 set tempsize=%filesize%
@@ -33,7 +35,7 @@ call %AppPath% --socket-timeout 45 --print formats_table %%VideoURL%% >> "%filen
 if not errorlevel 0 exit /b
 call :size "%filename%"
 if %tempsize% == %filesize% exit /b
-cscript /nologo /e:javascript %0 "%filename%"
+cscript /nologo /e:javascript "%~dpnx0" "%filename%"
 if -%1- == ---- exit /b
 rem --limit-rate 8.5M
 start "yt-dlp: %VideoURL%" %AppPath% -o "%template%" --split-chapters --postprocessor-args "SplitChapters+ffmpeg:-map_metadata -1" --video-multistreams --audio-multistreams --windows-filenames --remux-video %extension% --concurrent-fragments 10 --socket-timeout 45 --abort-on-unavailable-fragment --exec "pause " --embed-metadata --format %format% %VideoURL% ^&exit/b
