@@ -36,7 +36,7 @@ call %AppPath% --socket-timeout 45 --print formats_table %%VideoURL%% >> "%filen
 if not errorlevel 0 exit /b
 call :size "%filename%"
 if %tempsize% == %filesize% exit /b
-for /f %%i in ('cscript /nologo /e:javascript "%~dpnx0" "%filename%" /FORMATRECOMMENDATIONS:%enable_format_recommendations%') do if defined enable_format_recommendations if not "%enable_format_recommendations%" == "0" if not "%%i" == "" set format=%%i
+for /f %%i in ('cscript /nologo /e:javascript "%~dpnx0" "%filename%" /FORMATRECOMMENDATIONS:%enable_format_recommendations%') do if defined enable_format_recommendations if "%enable_format_recommendations%" == "1" if not "%%i" == "" set format=%%i
 if -%1- == ---- exit /b
 rem --limit-rate 8.5M
 start "yt-dlp: %VideoURL%" %AppPath% -o "%template%" --split-chapters --postprocessor-args "SplitChapters+ffmpeg:-map_metadata -1" --video-multistreams --audio-multistreams --windows-filenames --remux-video %extension% --concurrent-fragments 10 --socket-timeout 45 --abort-on-unavailable-fragment --exec "pause " --embed-metadata --format %format% %VideoURL% ^&exit/b
@@ -56,7 +56,7 @@ if(WSH.Arguments.Unnamed.Count && fso.FileExists(fName=WSH.Arguments.Unnamed(0))
         Open(); Charset="UTF-8"; Position=0; WriteText(newText + (isTemp ? "" : "\r\n")); SaveToFile(fName); Close();
     }
 }
-if(WSH.Arguments.Named.Item("FORMATRECOMMENDATIONS") && newText){
+if(1*WSH.Arguments.Named.Item("FORMATRECOMMENDATIONS") && newText){
     var lines = newText.split("\r\n"), best_audio = "", best_video = "";
     for(var lineIndex in lines){
         if(/(^hls\S+)\s.+audio only.*$/.test(lines[lineIndex]))best_audio = RegExp.$1;
