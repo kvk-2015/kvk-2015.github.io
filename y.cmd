@@ -2,7 +2,7 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://vkvideo.ru/video-21732035_456241819
+set VideoURL=gaRy9U0yiSA
 set head=
 set suffix=
 set series=%%(series)s. 
@@ -12,7 +12,7 @@ set enable_format_recommendations=1
 set extension=mov
 set AppPath=D:\kvk\Utilities\GitHub\yt-dlp\yt-dlp.cmd
 if not exist %AppPath% set AppPath=yt-dlp.exe
-if not -%1- == -- set format=%1
+if not -%1- == -- (set format=%1 & set enable_format_recommendations=0)
 set tempFileName=%random%.tmp
 call %AppPath% -o "%%template:.!=%%" --windows-filenames --socket-timeout 45 --print-to-file filename %%tempFileName%% --skip-download %%VideoURL%%
 if not errorlevel 0 if exist %tempFileName% del /q %tempFileName%
@@ -57,10 +57,15 @@ if(WSH.Arguments.Unnamed.Count && fso.FileExists(fName=WSH.Arguments.Unnamed(0))
     }
 }
 if(1*WSH.Arguments.Named.Item("FORMATRECOMMENDATIONS") && newText){
-    var lines = newText.split("\r\n"), best_audio = "", best_video = "";
+    var line, lines = newText.split("\r\n"), recommended_audio_format = "", recommended_video_format = "";
     for(var lineIndex in lines){
-        if(/(^hls\S+)\s.+audio only.*$/.test(lines[lineIndex]))best_audio = RegExp.$1;
-        else if(/(^hls\S+)\s.+video only.*$/.test(lines[lineIndex]))best_video = RegExp.$1;
+        if(/audio only/.test(line=lines[lineIndex])){
+            if(/(^hls\S+)\s.+audio only.*$/.test(line))recommended_audio_format = RegExp.$1;
+            else if(!/^hls/.test(recommended_audio_format) && /(^\S+)\s+m4a/.test(line))recommended_audio_format = RegExp.$1;
+        } else if(/video only/.test(line)){
+            if(/(^hls\S+)\s.+video only.*$/.test(line))recommended_video_format = RegExp.$1;
+            else if(!/^hls/.test(recommended_video_format) && /(^\S+)\s+mp4\s+1920x1080\s+.*avc1/.test(line))recommended_video_format = RegExp.$1;
+        }
     }
-    WSH.echo(best_audio && best_video ? best_audio + "+" + best_video : "");
+    WSH.echo(recommended_audio_format && recommended_video_format ? recommended_audio_format + "+" + recommended_video_format : "");
 }
