@@ -2,12 +2,13 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://smotrim.ru/video/1979922
+set VideoURL=https://vkvideo.ru/video-21732035_456241819
 set head=
 set suffix=
 set series=%%(series)s. 
 call :set_template
 set format=b
+set enable_format_recommendations=1
 set extension=mov
 set AppPath=D:\kvk\Utilities\GitHub\yt-dlp\yt-dlp.cmd
 if not exist %AppPath% set AppPath=yt-dlp.exe
@@ -35,7 +36,7 @@ call %AppPath% --socket-timeout 45 --print formats_table %%VideoURL%% >> "%filen
 if not errorlevel 0 exit /b
 call :size "%filename%"
 if %tempsize% == %filesize% exit /b
-cscript /nologo /e:javascript "%~dpnx0" "%filename%"
+for /f %%i in ('cscript /nologo /e:javascript "%~dpnx0" "%filename%" /FORMATRECOMMENDATIONS:%enable_format_recommendations%') do if defined enable_format_recommendations if not "%enable_format_recommendations%" == "0" if not "%%i" == "" set format=%%i
 if -%1- == ---- exit /b
 rem --limit-rate 8.5M
 start "yt-dlp: %VideoURL%" %AppPath% -o "%template%" --split-chapters --postprocessor-args "SplitChapters+ffmpeg:-map_metadata -1" --video-multistreams --audio-multistreams --windows-filenames --remux-video %extension% --concurrent-fragments 10 --socket-timeout 45 --abort-on-unavailable-fragment --exec "pause " --embed-metadata --format %format% %VideoURL% ^&exit/b
@@ -46,12 +47,20 @@ exit /b
 set filesize=%~z1
 goto:eof */
 
-var fso = new ActiveXObject("Scripting.FileSystemObject");
+var fso = new ActiveXObject("Scripting.FileSystemObject"), fName = "", newText = "";
 if(WSH.Arguments.Unnamed.Count && fso.FileExists(fName=WSH.Arguments.Unnamed(0))){
     with(new ActiveXObject("ADODB.Stream")){Type=2; Mode=3; Open(); Charset="UTF-8"; LoadFromFile(fName);
-        Position=0; var newName=ReadText().replace(/\s*$/, ""); Close();
-        newName = ((isTemp=/^\d+\.tmp$/.test(fName)) ? newName.replace(/\(/g, "{").replace(/\)/g, "}") : newName.replace(/\r\n|\n/g, "\r\n"));
+        Position=0; var newText=ReadText().replace(/\s*$/, ""); Close();
+        newText = ((isTemp=/^\d+\.tmp$/.test(fName)) ? newText.replace(/\(/g, "{").replace(/\)/g, "}") : newText.replace(/\r\n|\n/g, "\r\n"));
         fso.DeleteFile(fName);
-        Open(); Charset="UTF-8"; Position=0; WriteText(newName + (isTemp ? "" : "\r\n")); SaveToFile(fName); Close();
+        Open(); Charset="UTF-8"; Position=0; WriteText(newText + (isTemp ? "" : "\r\n")); SaveToFile(fName); Close();
     }
+}
+if(WSH.Arguments.Named.Item("FORMATRECOMMENDATIONS") && newText){
+    var lines = newText.split("\r\n"), best_audio = "", best_video = "";
+    for(var lineIndex in lines){
+        if(/(^hls\S+)\s.+audio only.*$/.test(lines[lineIndex]))best_audio = RegExp.$1;
+        else if(/(^hls\S+)\s.+video only.*$/.test(lines[lineIndex]))best_video = RegExp.$1;
+    }
+    WSH.echo(best_audio && best_video ? best_audio + "+" + best_video : "");
 }
