@@ -2,7 +2,7 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://vkvideo.ru/video-21732035_456241833
+set VideoURL=https://vksport.vkvideo.ru/video-26114492_456241020
 set head=
 set suffix=.!
 set series=%%(series)s. 
@@ -57,13 +57,14 @@ if(WSH.Arguments.Unnamed.Count && fso.FileExists(fName=WSH.Arguments.Unnamed(0))
     }
 }
 if(1*WSH.Arguments.Named.Item("FORMATRECOMMENDATIONS") && newText){
-    var lines = newText.split("\r\n"), recommended_audio_format = "", recommended_video_format = "";
+    var lines = newText.split("\r\n"), recommended_audio_format = "", recommended_video_format = "", recommended_format = "";
     var audio_regexp = "", video_regexp = "", page_specific = {
         "AM_Live": [/\bvkvideo.ru\/video-21732035_/, /(^hls\S+_1\D\S+)\s/, /(^hls\S+)\s.+25 \|/]
     }
     for(var lineIndex in lines){
         var line = lines[lineIndex];
         if(lineIndex==0)for(var i in page_specific)if(page_specific[i][0].test(line)){audio_regexp = page_specific[i][1], video_regexp = page_specific[i][2]; break}
+        if(!audio_regexp && !video_regexp && /(^hls\S+)\s.*(?:unknown|m3u8\s+\|\s+avc1[.\d]+\s+mp4a[.\d]+)(?:\s|$)/.test(line))recommended_format = RegExp.$1;
         if(/audio only/.test(line)){
             if(audio_regexp){if(audio_regexp.test(line))recommended_audio_format = RegExp.$1}
             else if(/(^hls\S+)\s/.test(line))recommended_audio_format = RegExp.$1;
@@ -74,5 +75,6 @@ if(1*WSH.Arguments.Named.Item("FORMATRECOMMENDATIONS") && newText){
             else if(!/^hls/.test(recommended_video_format) && /(^\S+)\s+mp4\s+1920x1080\s+.*avc1/.test(line))recommended_video_format = RegExp.$1;
         }
     }
-    WSH.echo(recommended_audio_format && recommended_video_format ? recommended_audio_format + "+" + recommended_video_format : "");
+    if(recommended_format)WSH.echo(recommended_format);
+    else WSH.echo(recommended_audio_format && recommended_video_format ? recommended_audio_format + "+" + recommended_video_format : "");
 }
