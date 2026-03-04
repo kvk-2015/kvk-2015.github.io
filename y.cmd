@@ -2,7 +2,7 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://vksport.vkvideo.ru/video-26114492_456241020
+set VideoURL=https://vkvideo.ru/video-21732035_456241851
 set head=
 set suffix=.!
 set series=%%(series)s. 
@@ -47,6 +47,12 @@ exit /b
 set filesize=%~z1
 goto:eof */
 
+// Описание работы скрипта на основании подготовленного видео о скачивании с его помошью (с размышлениями о юридических тонкостях при этом),
+// статьи в Дзене у меня, также текстов скриптов (там ещё про получение оглавления папки с видеофайлами)
+// в Алисе Про: https://alicepro.yandex.ru/expert/projects/5f35ee4ef1a511f081018e7d0d775479
+// (этот вариант описательного ИИ может использоваться только на территории Российской Федерации и Республики Беларусь)
+// Ссылка на свежий вариант этого батника у меня на GitHub: https://kvk-2015.github.io/y.cmd
+
 var fso = new ActiveXObject("Scripting.FileSystemObject"), fName = "", newText = "";
 if(WSH.Arguments.Unnamed.Count && fso.FileExists(fName=WSH.Arguments.Unnamed(0))){
     with(new ActiveXObject("ADODB.Stream")){Type=2; Mode=3; Open(); Charset="UTF-8"; LoadFromFile(fName);
@@ -59,12 +65,12 @@ if(WSH.Arguments.Unnamed.Count && fso.FileExists(fName=WSH.Arguments.Unnamed(0))
 if(1*WSH.Arguments.Named.Item("FORMATRECOMMENDATIONS") && newText){
     var lines = newText.split("\r\n"), recommended_audio_format = "", recommended_video_format = "", recommended_format = "";
     var audio_regexp = "", video_regexp = "", page_specific = {
-        "AM_Live": [/\bvkvideo.ru\/video-21732035_/, /(^hls\S+_1\D\S+)\s/, /(^hls\S+)\s.+25 \|/]
+        "AM_Live": [/:\/\/vkvideo\.ru\/video-21732035_/, /(^hls\S+_2\D\S*)\s/, /(^hls\S+)\s.+25 \|/]
     }
     for(var lineIndex in lines){
         var line = lines[lineIndex];
         if(lineIndex==0)for(var i in page_specific)if(page_specific[i][0].test(line)){audio_regexp = page_specific[i][1], video_regexp = page_specific[i][2]; break}
-        if(!audio_regexp && !video_regexp && /(^hls\S+)\s.*(?:unknown|m3u8\s+\|\s+avc1[.\d]+\s+mp4a[.\d]+)(?:\s|$)/.test(line))recommended_format = RegExp.$1;
+        if(!audio_regexp && !video_regexp && /(^\S+)\s+mp4\s+1920x1080\s+25\D.*m3u8\s+\|\s+(?:unknown\s+unknown|avc1[.\d]+\s+mp4a[.\d]+)(?:\s|$)/.test(line))recommended_format = RegExp.$1;
         if(/audio only/.test(line)){
             if(audio_regexp){if(audio_regexp.test(line))recommended_audio_format = RegExp.$1}
             else if(/(^hls\S+)\s/.test(line))recommended_audio_format = RegExp.$1;
