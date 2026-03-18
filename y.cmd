@@ -29,7 +29,7 @@ set filename=!filename:.webm=.%extension%!.txt
 setlocal disabledelayedexpansion
 echo %VideoURL% > "%filename%" && del /q %tempFileName%
 cscript /nologo /e:javascript "%~dpnx0" "%filename%"
-call %AppPath% --socket-timeout 45 --print "<%%%%(uploader)s>" %%VideoURL%% >> "%filename%"
+call %AppPath% --socket-timeout 45 --print "<%%%%(webpage_url_domain)s:%%%%(uploader)s>" %%VideoURL%% >> "%filename%"
 cscript /nologo /e:javascript "%~dpnx0" "%filename%"
 echo.>> "%filename%"
 call :size "%filename%"
@@ -58,7 +58,7 @@ goto:eof */
 var fso = new ActiveXObject("Scripting.FileSystemObject"), fName = "", newText = "";
 if(WSH.Arguments.Unnamed.Count && fso.FileExists(fName=WSH.Arguments.Unnamed(0))){
     with(new ActiveXObject("ADODB.Stream")){Type=2; Mode=3; Open(); Charset="UTF-8"; LoadFromFile(fName);
-        Position=0; var newText=ReadText().replace(/(?:\s*<NA>)?\s*$/g, ""); Close();
+        Position=0; var newText=ReadText().replace(/(?:\s*<[^:]*:NA>)?\s*$/g, ""); Close();
         newText = ((isTemp=/^\d+\.tmp$/.test(fName)) ? newText.replace(/\(/g, "{").replace(/\)/g, "}") : newText.replace(/\r\n|\n/g, "\r\n"));
         fso.DeleteFile(fName);
         Open(); Charset="UTF-8"; Position=0; WriteText(newText + (isTemp ? "" : "\r\n")); SaveToFile(fName); Close();
