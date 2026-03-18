@@ -2,7 +2,7 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://vkvideo.ru/video-21732035_456241851
+set VideoURL=https://rutube.ru/video/54f195e5a8766888393f2f6cbce6fca8/
 set head=
 set suffix=.!
 set series=%%(series)s. 
@@ -28,6 +28,8 @@ set filename=!filename:.mp4=.%extension%!
 set filename=!filename:.webm=.%extension%!.txt
 setlocal disabledelayedexpansion
 echo %VideoURL% > "%filename%" && del /q %tempFileName%
+cscript /nologo /e:javascript "%~dpnx0" "%filename%"
+call %AppPath% --socket-timeout 45 --print "<%%%%(uploader)s>" %%VideoURL%% >> "%filename%"
 cscript /nologo /e:javascript "%~dpnx0" "%filename%"
 echo.>> "%filename%"
 call :size "%filename%"
@@ -56,7 +58,7 @@ goto:eof */
 var fso = new ActiveXObject("Scripting.FileSystemObject"), fName = "", newText = "";
 if(WSH.Arguments.Unnamed.Count && fso.FileExists(fName=WSH.Arguments.Unnamed(0))){
     with(new ActiveXObject("ADODB.Stream")){Type=2; Mode=3; Open(); Charset="UTF-8"; LoadFromFile(fName);
-        Position=0; var newText=ReadText().replace(/\s*$/, ""); Close();
+        Position=0; var newText=ReadText().replace(/(?:\s*<NA>)?\s*$/g, ""); Close();
         newText = ((isTemp=/^\d+\.tmp$/.test(fName)) ? newText.replace(/\(/g, "{").replace(/\)/g, "}") : newText.replace(/\r\n|\n/g, "\r\n"));
         fso.DeleteFile(fName);
         Open(); Charset="UTF-8"; Position=0; WriteText(newText + (isTemp ? "" : "\r\n")); SaveToFile(fName); Close();
@@ -69,7 +71,7 @@ if(1*WSH.Arguments.Named.Item("FORMATRECOMMENDATIONS") && newText){
     }
     for(var lineIndex in lines){
         var line = lines[lineIndex];
-        if(lineIndex==0)for(var i in page_specific)if(page_specific[i][0].test(line)){audio_regexp = page_specific[i][1], video_regexp = page_specific[i][2]; break}
+        if(lineIndex<=1)for(var i in page_specific)if(page_specific[i][0].test(line)){audio_regexp = page_specific[i][1], video_regexp = page_specific[i][2]; break}
         if(!audio_regexp && !video_regexp && /(^\S+)\s+mp4\s+1920x1080\s+25\D.*m3u8\s+\|\s+(?:unknown\s+unknown|avc1[.\d]+\s+mp4a[.\d]+)(?:\s|$)/.test(line))recommended_format = RegExp.$1;
         if(/audio only/.test(line)){
             if(audio_regexp){if(audio_regexp.test(line))recommended_audio_format = RegExp.$1}
