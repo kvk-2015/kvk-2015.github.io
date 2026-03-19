@@ -2,7 +2,7 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://rutube.ru/video/54f195e5a8766888393f2f6cbce6fca8/
+set VideoURL=https://vkvideo.ru/video-70469400_456240042
 set head=
 set suffix=.!
 set series=%%(series)s. 
@@ -67,7 +67,8 @@ if(WSH.Arguments.Unnamed.Count && fso.FileExists(fName=WSH.Arguments.Unnamed(0))
 if(1*WSH.Arguments.Named.Item("FORMATRECOMMENDATIONS") && newText){
     var lines = newText.split("\r\n"), recommended_audio_format = "", recommended_video_format = "", recommended_format = "";
     var audio_regexp = "", video_regexp = "", page_specific = {
-        "AM_Live": [/:\/\/vkvideo\.ru\/video-21732035_/, /(^hls\S+_2\D\S*)\s/, /(^hls\S+)\s.+25 \|/]
+        "AM_Live":                      [/:\/\/vkvideo\.ru\/video-21732035_/, /(^hls\S+_2\D\S*)\s/, /(^hls\S+)\s.+25 \|/],
+        "vkvideo.ru:Mobile-Review.com": [/<vkvideo\.ru:Mobile-Review\.com>/, /(^hls\S+_2\D\S*)\s/, /(^hls\S+)\s.+1920x1080\s+25 \|/]
     }
     for(var lineIndex in lines){
         var line = lines[lineIndex];
