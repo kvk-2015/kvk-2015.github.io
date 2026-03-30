@@ -2,15 +2,15 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://vkvideo.ru/video-70469400_456240042
+set VideoURL=https://rutube.ru/video/b743caea3a30871169509a5c315d3946/
 set head=
-set suffix=.!
+set suffix=
 set series=%%(series)s. 
 call :set_template
 set format=b
 set enable_format_recommendations=1
 set extension=mov
-set AppPath=D:\kvk\Utilities\GitHub\yt-dlp\yt-dlp.cmd
+set AppPath=D:\kvk\Utilities1\GitHub\yt-dlp\yt-dlp.cmd
 if not exist %AppPath% set AppPath=yt-dlp.exe
 if not -%1- == -- (set format=%1 & set enable_format_recommendations=0)
 set tempFileName=%random%.tmp
@@ -66,14 +66,18 @@ if(WSH.Arguments.Unnamed.Count && fso.FileExists(fName=WSH.Arguments.Unnamed(0))
 }
 if(1*WSH.Arguments.Named.Item("FORMATRECOMMENDATIONS") && newText){
     var lines = newText.split("\r\n"), recommended_audio_format = "", recommended_video_format = "", recommended_format = "";
-    var audio_regexp = "", video_regexp = "", page_specific = {
+    var audio_regexp = "", video_regexp = "", regexp = "", page_specific = {
         "AM_Live":                      [/:\/\/vkvideo\.ru\/video-21732035_/, /(^hls\S+_2\D\S*)\s/, /(^hls\S+)\s.+25 \|/],
-        "vkvideo.ru:Mobile-Review.com": [/<vkvideo\.ru:Mobile-Review\.com>/, /(^hls\S+_2\D\S*)\s/, /(^hls\S+)\s.+1920x1080\s+25 \|/]
+        "vkvideo.ru:Mobile-Review.com": [/<vkvideo\.ru:Mobile-Review\.com>/, /(^hls\S+_2\D\S*)\s/, /(^hls\S+)\s.+1920x1080\s+25 \|/],
+        "rutube.ru:Константин Кулаков": [/<rutube\.ru:Константин Кулаков>/, /(^default-\S+)\s/]
     }
     for(var lineIndex in lines){
         var line = lines[lineIndex];
-        if(lineIndex<=1)for(var i in page_specific)if(page_specific[i][0].test(line)){audio_regexp = page_specific[i][1], video_regexp = page_specific[i][2]; break}
-        if(!audio_regexp && !video_regexp && /(^\S+)\s+mp4\s+1920x1080\s+25\D.*m3u8\s+\|\s+(?:unknown\s+unknown|avc1[.\d]+\s+mp4a[.\d]+)(?:\s|$)/.test(line))recommended_format = RegExp.$1;
+        if(lineIndex<=1)for(var i in page_specific)if(page_specific[i][0].test(line))
+            if(page_specific[i].length==3){audio_regexp = page_specific[i][1]; video_regexp = page_specific[i][2]; break}
+            else {regexp = page_specific[i][1]; break}
+        if(regexp && regexp.test(line))recommended_format = RegExp.$1;
+        else if(!audio_regexp && !video_regexp && /(^\S+)\s+mp4\s+1920x1080\s+25\D.*m3u8\s+\|\s+(?:unknown\s+unknown|avc1[.\d]+\s+mp4a[.\d]+)(?:\s|$)/.test(line))recommended_format = RegExp.$1;
         if(/audio only/.test(line)){
             if(audio_regexp){if(audio_regexp.test(line))recommended_audio_format = RegExp.$1}
             else if(/(^hls\S+)\s/.test(line))recommended_audio_format = RegExp.$1;
