@@ -30,7 +30,7 @@ setlocal disabledelayedexpansion
 echo %VideoURL% > "%filename%" && del /q %tempFileName%
 cscript /nologo /e:javascript "%~dpnx0" "%filename%"
 call %AppPath% --socket-timeout 45 --print "<%%%%(webpage_url_domain)s:%%%%(uploader)s>" %%VideoURL%% >> "%filename%"
-cscript /nologo /e:javascript "%~dpnx0" "%filename%"
+cscript /nologo /e:javascript "%~dpnx0" "%filename%" /toUTF-8:1
 echo.>> "%filename%"
 call :size "%filename%"
 set tempsize=%filesize%
@@ -57,7 +57,12 @@ goto:eof */
 
 var fso = new ActiveXObject("Scripting.FileSystemObject"), fName = "", newText = "";
 if(WSH.Arguments.Unnamed.Count && fso.FileExists(fName=WSH.Arguments.Unnamed(0))){
-    with(new ActiveXObject("ADODB.Stream")){Type=2; Mode=3; Open(); Charset="UTF-8"; LoadFromFile(fName);
+    if(1*WSH.Arguments.Named.Item("toUTF-8")){
+        var WshShell = new ActiveXObject("WScript.Shell");
+        var oExec = WshShell.Exec('reg.exe query "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Nls\\CodePage" -v ACP');
+        var Windows_codepage = getCodepageName();
+    } else Windows_codepage = "UTF-8";
+    with(new ActiveXObject("ADODB.Stream")){Type=2; Mode=3; Open(); Charset=Windows_codepage; LoadFromFile(fName);
         Position=0; var newText=ReadText().replace(/(?:\s*<[^:]*:NA>)?\s*$/g, ""); Close();
         newText = ((isTemp=/^\d+\.tmp$/.test(fName)) ? newText.replace(/\(/g, "{").replace(/\)/g, "}") : newText.replace(/\r\n|\n/g, "\r\n"));
         fso.DeleteFile(fName);
@@ -90,4 +95,17 @@ if(1*WSH.Arguments.Named.Item("FORMATRECOMMENDATIONS") && newText){
     }
     if(recommended_format)WSH.echo(recommended_format);
     else WSH.echo(recommended_audio_format && recommended_video_format ? recommended_audio_format + "+" + recommended_video_format : "");
+}
+
+function getCodepage(){
+    while(!oExec.Status || !oExec.StdOut.AtEndOfStream){
+        var new_codepage = /^[\s\S]*(?:REG_SZ|:)\s+(\S+)\s*$/.test(oExec.StdOut.ReadAll()) ? RegExp.$1 : "";
+    }
+    return new_codepage;
+}
+
+function getCodepageName(){
+    var commandHead = 'reg.exe query "HKCR\\MIME\\Database\\Codepage\\', codepage, WebCharset;
+    oExec = WshShell.Exec(commandHead + (codepage = getCodepage()) + '" -v BodyCharset'); var tempCodepageName = getCodepage();
+    oExec = WshShell.Exec(commandHead + codepage + '" -v WebCharset'); return (WebCharset = getCodepage()) ? WebCharset : tempCodepageName;
 }
