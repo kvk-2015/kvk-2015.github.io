@@ -2,15 +2,15 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://rutube.ru/video/b743caea3a30871169509a5c315d3946/
+set VideoURL=https://rutube.ru/video/ce17461a0ae0a7288ec9432643194235/
 set head=
-set suffix=
+set suffix=.!
 set series=%%(series)s. 
 call :set_template
 set format=b
 set enable_format_recommendations=1
-set extension=mov
-set AppPath=D:\kvk\Utilities1\GitHub\yt-dlp\yt-dlp.cmd
+set extension=mkv
+set AppPath=D:\kvk\Utilities\GitHub\yt-dlp\yt-dlp.cmd
 if not exist %AppPath% set AppPath=yt-dlp.exe
 if not -%1- == -- (set format=%1 & set enable_format_recommendations=0)
 set tempFileName=%random%.tmp
@@ -41,7 +41,7 @@ if %tempsize% == %filesize% exit /b
 for /f %%i in ('cscript /nologo /e:javascript "%~dpnx0" "%filename%" /FORMATRECOMMENDATIONS:%enable_format_recommendations%') do if defined enable_format_recommendations if "%enable_format_recommendations%" == "1" if not "%%i" == "" set format=%%i
 if -%1- == ---- exit /b
 rem --limit-rate 8.5M
-start "yt-dlp: %VideoURL%" %AppPath% -o "%template%" --split-chapters --postprocessor-args "SplitChapters+ffmpeg:-map_metadata -1" --video-multistreams --audio-multistreams --windows-filenames --remux-video %extension% --concurrent-fragments 10 --socket-timeout 45 --abort-on-unavailable-fragment --exec "pause " --embed-metadata --format %format% %VideoURL% ^&exit/b
+start "yt-dlp: %VideoURL%" %AppPath% -k -o "%template%" --split-chapters --postprocessor-args "SplitChapters+ffmpeg:-map_metadata -1" --video-multistreams --audio-multistreams --windows-filenames --remux-video %extension% --concurrent-fragments 10 --socket-timeout 45 --abort-on-unavailable-fragment --exec "pause " --embed-metadata --format %format% %VideoURL% ^&exit/b
 :set_template
 set template=%head%%series%%%(title)s [%%(id)s]%suffix%.%%(ext)s
 exit /b
