@@ -2,9 +2,9 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://rutube.ru/video/ce17461a0ae0a7288ec9432643194235/
+set VideoURL=https://smotrim.ru/video/4006008
 set head=
-set suffix=.!
+set suffix=
 set series=%%(series)s. 
 call :set_template
 set format=b
@@ -16,7 +16,22 @@ if not -%1- == -- (set format=%1 & set enable_format_recommendations=0)
 set tempFileName=%random%.tmp
 call %AppPath% -o "%%template:.!=%%" --windows-filenames --socket-timeout 45 --print-to-file filename %%tempFileName%% --skip-download %%VideoURL%%
 if not errorlevel 0 if exist %tempFileName% del /q %tempFileName%
-if not exist %tempFileName% exit /b
+if exist %tempFileName% goto :normal_process
+:: Пример временного "патча", когда yt-dlp ещё не может выполнить скачивание, например, из-за редизайна сайта,
+:: как пока обстоят дела для новых видео на smotrim.ru, но описание изменений api уже можно найти
+for /f "tokens=1,2 delims=," %%i in ('cscript /nologo /e:javascript "%~dpnx0" %tempFileName% /GetSmotrimData:"%VideoURL%"') do if not "%%i" == "" set new_url="%%i"&set id=%%j
+if not defined new_url exit /b
+set /p title=<%tempFileName%
+set template=%title% [%id%].%extension%
+if exist %tempFileName% del /q %tempFileName%
+set filename="%template%.txt"
+echo %VideoURL% > %filename%
+echo. >> %filename%
+echo %new_url% >> %filename%
+set VideoURL=%new_url%
+start "yt-dlp: smotrim" %AppPath% -k -o "%template%" --split-chapters --postprocessor-args "SplitChapters+ffmpeg:-map_metadata -1" --video-multistreams --audio-multistreams --windows-filenames --remux-video %extension% --concurrent-fragments 10 --socket-timeout 45 --abort-on-unavailable-fragment --exec "pause " --embed-metadata --format %format% %VideoURL%^&exit/b
+exit /b
+:normal_process
 cscript /nologo /e:javascript "%~dpnx0" %tempFileName%
 set /p filename=<%tempFileName%
 set processed_series=%filename:!.=!%
@@ -54,18 +69,30 @@ goto:eof */
 // в Алисе Про: https://alicepro.yandex.ru/expert/projects/5f35ee4ef1a511f081018e7d0d775479
 // (этот вариант описательного ИИ может использоваться только на территории Российской Федерации и Республики Беларусь)
 // Ссылка на свежий вариант этого батника у меня на GitHub: https://kvk-2015.github.io/y.cmd
+// У меня на компьютере установлена кодировка utf-8, если нужно, чтобы скрипт корректно выполнял поиск по регулярным выражениям на кирилице,
+// сохраните его в кодировке Windows-1251
 
-var fso = new ActiveXObject("Scripting.FileSystemObject"), fName = "", newText = "";
-if(WSH.Arguments.Unnamed.Count && fso.FileExists(fName=WSH.Arguments.Unnamed(0))){
+var fso = new ActiveXObject("Scripting.FileSystemObject"), fName = "", newText = "", WshShell = new ActiveXObject("WScript.Shell"), url, id;
+var CodePagesTestsDone = false, CodePages = [];
+if(url=WSH.Arguments.Named.Item("GetSmotrimData")){
+    if(!/:\/\/smotrim\.ru.*\/([^/]+)$/.test(url))WSH.Quit();
+    with(str=new ActiveXObject("ADODB.Stream")){Type=2; Mode=3;}
+    var oExec = WshShell.Exec('curl "https://player-api.smotrim.ru/api/v1/video/' + (id=RegExp.$1) + '"');
+    while(!oExec.Status || !oExec.StdOut.AtEndOfStream){
+        if(/"title":\s+"([^"]+)"/.test(line = oExec.StdOut.ReadLine()))var newText=DosToWin(RegExp.$1);
+        if(/"m3u8":\s+"([^"]+)"/.test(line))var new_url=RegExp.$1;
+    }
+    if(new_url && id)WSH.echo(new_url + "," + id);
+}
+if(WSH.Arguments.Unnamed.Count && (fso.FileExists(fName=WSH.Arguments.Unnamed(0)) || newText)){
     if(1*WSH.Arguments.Named.Item("toUTF-8")){
-        var WshShell = new ActiveXObject("WScript.Shell");
         var oExec = WshShell.Exec('reg.exe query "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Nls\\CodePage" -v ACP');
-        var Windows_codepage = getCodepageName();
+        var Windows_codepage = getCodepageName(oExec);
     } else Windows_codepage = "UTF-8";
-    with(new ActiveXObject("ADODB.Stream")){Type=2; Mode=3; Open(); Charset=Windows_codepage; LoadFromFile(fName);
-        Position=0; var newText=ReadText().replace(/(?:\s*<[^:]*:NA>)?\s*$/g, ""); Close();
+    with(new ActiveXObject("ADODB.Stream")){Type=2; Mode=3; if(!newText){Open(); Charset=Windows_codepage; LoadFromFile(fName);
+        Position=0; var newText=ReadText().replace(/(?:\s*<[^:]*:NA>)?\s*$/g, ""); Close();}
         newText = ((isTemp=/^\d+\.tmp$/.test(fName)) ? newText.replace(/\(/g, "{").replace(/\)/g, "}") : newText.replace(/\r\n|\n/g, "\r\n"));
-        fso.DeleteFile(fName);
+        if(fso.FileExists(fName))fso.DeleteFile(fName);
         Open(); Charset="UTF-8"; Position=0; WriteText(newText + (isTemp ? "" : "\r\n")); SaveToFile(fName); Close();
     }
 }
@@ -97,15 +124,35 @@ if(1*WSH.Arguments.Named.Item("FORMATRECOMMENDATIONS") && newText){
     else WSH.echo(recommended_audio_format && recommended_video_format ? recommended_audio_format + "+" + recommended_video_format : "");
 }
 
-function getCodepage(){
+function getCodepage(oExec){
     while(!oExec.Status || !oExec.StdOut.AtEndOfStream){
         var new_codepage = /^[\s\S]*(?:REG_SZ|:)\s+(\S+)\s*$/.test(oExec.StdOut.ReadAll()) ? RegExp.$1 : "";
     }
     return new_codepage;
 }
 
-function getCodepageName(){
+function getCodepageName(oExec){
     var commandHead = 'reg.exe query "HKCR\\MIME\\Database\\Codepage\\', codepage, WebCharset;
-    oExec = WshShell.Exec(commandHead + (codepage = getCodepage()) + '" -v BodyCharset'); var tempCodepageName = getCodepage();
-    oExec = WshShell.Exec(commandHead + codepage + '" -v WebCharset'); return (WebCharset = getCodepage()) ? WebCharset : tempCodepageName;
+    oExec = WshShell.Exec(commandHead + (codepage = getCodepage(oExec)) + '" -v BodyCharset'); var tempCodepageName = getCodepage(oExec);
+    oExec = WshShell.Exec(commandHead + codepage + '" -v WebCharset'); return (WebCharset = getCodepage(oExec)) ? WebCharset : tempCodepageName;
+}
+function DosToWin(dosString){
+    var result;
+    if(!CodePagesTestsDone){
+        var oExec = WshShell.Exec('cmd.exe /c chcp');   var DOS_codepage = getCodepageName(oExec);
+        oExec = WshShell.Exec('reg.exe query "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Nls\\CodePage" -v ACP');    var Windows_codepage = getCodepageName(oExec);
+        if(DOS_codepage != Windows_codepage)CodePages = [DOS_codepage, Windows_codepage];
+        CodePagesTestsDone = true;
+    }
+    if(!CodePages.length)return dosString;
+    with(str){
+        Open();
+        Charset = CodePages[1];
+        WriteText(dosString);
+        Position = 0;
+        Charset = CodePages[0];
+        result = ReadText();
+        Close();
+    }
+    return result;
 }
