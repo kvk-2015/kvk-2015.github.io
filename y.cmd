@@ -2,7 +2,7 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://smotrim.ru/video/4006008
+set VideoURL=https://smotrim.ru/video/4011283
 set head=
 set suffix=
 set series=%%(series)s. 
@@ -79,10 +79,11 @@ if(url=WSH.Arguments.Named.Item("GetSmotrimData")){
     with(str=new ActiveXObject("ADODB.Stream")){Type=2; Mode=3;}
     var oExec = WshShell.Exec('curl "https://player-api.smotrim.ru/api/v1/video/' + (id=RegExp.$1) + '"');
     while(!oExec.Status || !oExec.StdOut.AtEndOfStream){
-        if(/"title":\s+"([^"]+)"/.test(line = oExec.StdOut.ReadLine()))var newText=DosToWin(RegExp.$1);
+        if(/"title":\s+"([^"]+)"/.test(line = oExec.StdOut.ReadLine()))newText += ". " + DosToWin(RegExp.$1);
         if(/"m3u8":\s+"([^"]+)"/.test(line))var new_url=RegExp.$1;
     }
     if(new_url && id)WSH.echo(new_url + "," + id);
+    if(newText)newText = newText.slice(2);
 }
 if(WSH.Arguments.Unnamed.Count && (fso.FileExists(fName=WSH.Arguments.Unnamed(0)) || newText)){
     if(1*WSH.Arguments.Named.Item("toUTF-8")){
