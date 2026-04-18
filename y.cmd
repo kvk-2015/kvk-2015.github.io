@@ -19,7 +19,7 @@ if not errorlevel 0 if exist %tempFileName% del /q %tempFileName%
 if exist %tempFileName% goto :normal_process
 :: Пример временного "патча", когда yt-dlp ещё не может выполнить скачивание, например, из-за редизайна сайта,
 :: как пока обстоят дела для новых видео на smotrim.ru, но описание изменений api уже можно найти
-for /f "tokens=1,2 delims=," %%i in ('cscript /nologo /e:javascript "%~dpnx0" %tempFileName% /GetSmotrimData:"%VideoURL%"') do if not "%%i" == "" set new_url="%%i"&set id=%%j
+for /f "tokens=1,2,3 delims=," %%i in ('cscript /nologo /e:javascript "%~dpnx0" %tempFileName% /GetSmotrimData:"%VideoURL%"') do if not "%%i" == "" set new_url="%%i"&set id=%%j&set json_url=%%k
 if not defined new_url exit /b
 set /p title=<%tempFileName%
 set template=%title% [%id%].%extension%
@@ -27,7 +27,10 @@ if exist %tempFileName% del /q %tempFileName%
 set filename="%template%.txt"
 echo %VideoURL% > %filename%
 echo. >> %filename%
+echo %json_url% >> %filename%
 echo %new_url% >> %filename%
+cscript /nologo /e:javascript "%~dpnx0" %filename%
+if -%1- == ---- exit /b
 set VideoURL=%new_url%
 start "yt-dlp: smotrim" %AppPath% -k -o "%template%" --split-chapters --postprocessor-args "SplitChapters+ffmpeg:-map_metadata -1" --video-multistreams --audio-multistreams --windows-filenames --remux-video %extension% --concurrent-fragments 10 --socket-timeout 45 --abort-on-unavailable-fragment --exec "pause " --embed-metadata --format %format% %VideoURL%^&exit/b
 exit /b
@@ -72,17 +75,17 @@ goto:eof */
 // У меня на компьютере установлена кодировка utf-8, если нужно, чтобы скрипт корректно выполнял поиск по регулярным выражениям на кирилице,
 // сохраните его в кодировке Windows-1251
 
-var fso = new ActiveXObject("Scripting.FileSystemObject"), fName = "", newText = "", WshShell = new ActiveXObject("WScript.Shell"), url, id;
+var fso = new ActiveXObject("Scripting.FileSystemObject"), fName = "", newText = "", WshShell = new ActiveXObject("WScript.Shell"), url, id, json_url;
 var CodePagesTestsDone = false, CodePages = [];
 if(url=WSH.Arguments.Named.Item("GetSmotrimData")){
     if(!/:\/\/smotrim\.ru.*\/([^/]+)$/.test(url))WSH.Quit();
     with(str=new ActiveXObject("ADODB.Stream")){Type=2; Mode=3;}
-    var oExec = WshShell.Exec('curl "https://player-api.smotrim.ru/api/v1/video/' + (id=RegExp.$1) + '"');
+    var oExec = WshShell.Exec((json_url='curl "https://player-api.smotrim.ru/api/v1/video/' + (id=RegExp.$1)) + '"');
     while(!oExec.Status || !oExec.StdOut.AtEndOfStream){
         if(/"title":\s+"([^"]+)"/.test(line = oExec.StdOut.ReadLine()))newText += ". " + DosToWin(RegExp.$1);
         if(/"m3u8":\s+"([^"]+)"/.test(line))var new_url=RegExp.$1;
     }
-    if(new_url && id)WSH.echo(new_url + "," + id);
+    if(new_url && id && json_url)WSH.echo(new_url + "," + id + "," + json_url.slice(6));
     if(newText)newText = newText.slice(2);
 }
 if(WSH.Arguments.Unnamed.Count && (fso.FileExists(fName=WSH.Arguments.Unnamed(0)) || newText)){
@@ -90,9 +93,9 @@ if(WSH.Arguments.Unnamed.Count && (fso.FileExists(fName=WSH.Arguments.Unnamed(0)
         var oExec = WshShell.Exec('reg.exe query "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Nls\\CodePage" -v ACP');
         var Windows_codepage = getCodepageName(oExec);
     } else Windows_codepage = "UTF-8";
-    with(new ActiveXObject("ADODB.Stream")){Type=2; Mode=3; if(!newText){Open(); Charset=Windows_codepage; LoadFromFile(fName);
-        Position=0; var newText=ReadText().replace(/(?:\s*<[^:]*:NA>)?\s*$/g, ""); Close();}
-        newText = ((isTemp=/^\d+\.tmp$/.test(fName)) ? newText.replace(/\(/g, "{").replace(/\)/g, "}") : newText.replace(/\r\n|\n/g, "\r\n"));
+    with(new ActiveXObject("ADODB.Stream")){Type=2; Mode=3;
+        if(!newText){Open(); Charset=Windows_codepage; LoadFromFile(fName); Position=0; newText=ReadText().replace(/(?:\s*<[^:]*:NA>)?\s*$/g, ""); Close()}
+        newText = ((isTemp=/^\d+\.tmp$/.test(fName)) ? newText.replace(/\(/g, "{").replace(/\)/g, "}") : newText.replace(/ *\r\n|\n(\r\n|\n)?/g, "\r\n$1"));
         if(fso.FileExists(fName))fso.DeleteFile(fName);
         Open(); Charset="UTF-8"; Position=0; WriteText(newText + (isTemp ? "" : "\r\n")); SaveToFile(fName); Close();
     }
