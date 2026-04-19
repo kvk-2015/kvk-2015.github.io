@@ -2,7 +2,7 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://smotrim.ru/video/4011283
+set VideoURL=https://smotrim.ru/video/4013638
 set head=
 set suffix=
 set series=%%(series)s. 
@@ -73,19 +73,19 @@ goto:eof */
 // (этот вариант описательного ИИ может использоваться только на территории Российской Федерации и Республики Беларусь)
 // Ссылка на свежий вариант этого батника у меня на GitHub: https://kvk-2015.github.io/y.cmd
 // У меня на компьютере установлена кодировка utf-8, если нужно, чтобы скрипт корректно выполнял поиск по регулярным выражениям на кирилице,
-// сохраните его в кодировке Windows-1251
+// сохраните его в кодировке Windows-1251, если она установлена на вашем компьютере
 
 var fso = new ActiveXObject("Scripting.FileSystemObject"), fName = "", newText = "", WshShell = new ActiveXObject("WScript.Shell"), url, id, json_url;
 var CodePagesTestsDone = false, CodePages = [];
 if(url=WSH.Arguments.Named.Item("GetSmotrimData")){
-    if(!/:\/\/smotrim\.ru.*\/([^/]+)$/.test(url))WSH.Quit();
+    if(!/:\/\/smotrim\.ru.*\/(?:#playing_video=)?([^/]+)$/.test(url))WSH.Quit();
     with(str=new ActiveXObject("ADODB.Stream")){Type=2; Mode=3;}
-    var oExec = WshShell.Exec((json_url='curl "https://player-api.smotrim.ru/api/v1/video/' + (id=RegExp.$1)) + '"');
+    var oExec = WshShell.Exec((json_url='curl.exe "https://player-api.smotrim.ru/api/v1/video/' + (id=RegExp.$1)) + '"');
     while(!oExec.Status || !oExec.StdOut.AtEndOfStream){
-        if(/"title":\s+"([^"]+)"/.test(line = oExec.StdOut.ReadLine()))newText += ". " + DosToWin(RegExp.$1);
+        if(/"title":\s+"([^"]+)"/.test(line = oExec.StdOut.ReadLine()))newText += ". " + DosToWin(decodeURIComponent(encodeURIComponent(RegExp.$1).replace(/(?:%EF%BF%BD){2}/g, "..")));
         if(/"m3u8":\s+"([^"]+)"/.test(line))var new_url=RegExp.$1;
     }
-    if(new_url && id && json_url)WSH.echo(new_url + "," + id + "," + json_url.slice(6));
+    if(new_url && id && json_url)WSH.echo(new_url + "," + id + "," + json_url.slice(10));
     if(newText)newText = newText.slice(2);
 }
 if(WSH.Arguments.Unnamed.Count && (fso.FileExists(fName=WSH.Arguments.Unnamed(0)) || newText)){
@@ -95,7 +95,7 @@ if(WSH.Arguments.Unnamed.Count && (fso.FileExists(fName=WSH.Arguments.Unnamed(0)
     } else Windows_codepage = "UTF-8";
     with(new ActiveXObject("ADODB.Stream")){Type=2; Mode=3;
         if(!newText){Open(); Charset=Windows_codepage; LoadFromFile(fName); Position=0; newText=ReadText().replace(/(?:\s*<[^:]*:NA>)?\s*$/g, ""); Close()}
-        newText = ((isTemp=/^\d+\.tmp$/.test(fName)) ? newText.replace(/\(/g, "{").replace(/\)/g, "}") : newText.replace(/ *\r\n|\n(\r\n|\n)?/g, "\r\n$1"));
+        newText = ((isTemp=/^\d+\.tmp$/.test(fName)) ? newText.replace(/\(/g, "{").replace(/\)/g, "}") : newText.replace(/ *\r\n|\n(\r\n)?/g, "\r\n$1"));
         if(fso.FileExists(fName))fso.DeleteFile(fName);
         Open(); Charset="UTF-8"; Position=0; WriteText(newText + (isTemp ? "" : "\r\n")); SaveToFile(fName); Close();
     }
