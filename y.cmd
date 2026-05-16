@@ -80,12 +80,12 @@ var CodePagesTestsDone = false, CodePages = [];
 if(url=WSH.Arguments.Named.Item("GetSmotrimData")){
     if(!/:\/\/smotrim\.ru.*\/.*video[\/=](\d+)$/.test(url))WSH.Quit();
     with(str=new ActiveXObject("ADODB.Stream")){Type=2; Mode=3;}
-    var oExec = WshShell.Exec((json_url='curl.exe "https://player-api.smotrim.ru/api/v1/video/' + (id=RegExp.$1)) + '"');
+    var oExec = WshShell.Exec((json_url='curl.exe --raw "https://player-api.smotrim.ru/api/v1/video/' + (id=RegExp.$1)) + '"');
     while(!oExec.Status || !oExec.StdOut.AtEndOfStream){
         if(/"title":\s+"([^"]+)"/.test(line = oExec.StdOut.ReadLine()))newText += ". " + DosToWin(decodeURIComponent(encodeURIComponent(RegExp.$1).replace(/(?:%EF%BF%BD){2}/g, "..")));
         if(/"m3u8":\s+"([^"]+)"/.test(line))var new_url=RegExp.$1;
     }
-    if(new_url && id && json_url)WSH.echo(new_url + "," + id + "," + json_url.slice(10));
+    if(new_url && id && json_url)WSH.echo(new_url + "," + id + "," + json_url.slice(16));
     if(newText)newText = newText.slice(2);
 }
 if(WSH.Arguments.Unnamed.Count && (fso.FileExists(fName=WSH.Arguments.Unnamed(0)) || newText)){
