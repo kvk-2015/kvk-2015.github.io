@@ -2,7 +2,7 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://smotrim.ru/video/4013638
+set VideoURL=https://smotrim.ru/brand/71102#playing_video=2877169
 set head=
 set suffix=
 set series=%%(series)s. 
@@ -78,7 +78,7 @@ goto:eof */
 var fso = new ActiveXObject("Scripting.FileSystemObject"), fName = "", newText = "", WshShell = new ActiveXObject("WScript.Shell"), url, id, json_url;
 var CodePagesTestsDone = false, CodePages = [];
 if(url=WSH.Arguments.Named.Item("GetSmotrimData")){
-    if(!/:\/\/smotrim\.ru.*\/(?:#playing_video=)?([^/]+)$/.test(url))WSH.Quit();
+    if(!/:\/\/smotrim\.ru.*\/.*video[\/=](\d+)$/.test(url))WSH.Quit();
     with(str=new ActiveXObject("ADODB.Stream")){Type=2; Mode=3;}
     var oExec = WshShell.Exec((json_url='curl.exe "https://player-api.smotrim.ru/api/v1/video/' + (id=RegExp.$1)) + '"');
     while(!oExec.Status || !oExec.StdOut.AtEndOfStream){
