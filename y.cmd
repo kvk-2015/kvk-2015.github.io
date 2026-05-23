@@ -2,7 +2,7 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://smotrim.ru/brand/69929#playing_video=2679147
+set VideoURL=https://vkvideo.ru/video-20648295_456253911
 set head=
 set suffix=
 set series=%%(series)s. 
@@ -103,7 +103,8 @@ if(WSH.Arguments.Unnamed.Count && (fso.FileExists(fName=WSH.Arguments.Unnamed(0)
 if(1*WSH.Arguments.Named.Item("FORMATRECOMMENDATIONS") && newText){
     var lines = newText.split("\r\n"), recommended_audio_format = "", recommended_video_format = "", recommended_format = "";
     var audio_regexp = "", video_regexp = "", regexp = "", page_specific = {
-        "AM_Live":                      [/:\/\/vkvideo\.ru\/video-21732035_/, /(^hls\S+_2\D\S*)\s/, /(^hls\S+)\s.+25 \|/],
+        "AM_Live,interviews_on_vkvideo":[/:\/\/vkvideo\.ru\/video-(?:21732035|20648295|35758136)_/,
+                                        /(^hls\S+_2\D\S*)\s/, /(^hls\S+)\s.+(?:25|30) \|/],
         "vkvideo.ru:Mobile-Review.com": [/<vkvideo\.ru:Mobile-Review\.com>/, /(^hls\S+_2\D\S*)\s/, /(^hls\S+)\s.+1920x1080\s+25 \|/],
         "rutube.ru:Константин Кулаков": [/<rutube\.ru:Константин Кулаков>/, /(^default-\S+)\s/]
     }
