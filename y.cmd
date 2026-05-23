@@ -2,7 +2,7 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://smotrim.ru/brand/71102#playing_video=2877169
+set VideoURL=https://smotrim.ru/brand/69929#playing_video=2679147
 set head=
 set suffix=
 set series=%%(series)s. 
@@ -76,17 +76,17 @@ goto:eof */
 // сохраните его в кодировке Windows-1251, если она установлена на вашем компьютере
 
 var fso = new ActiveXObject("Scripting.FileSystemObject"), fName = "", newText = "", WshShell = new ActiveXObject("WScript.Shell"), url, id, json_url;
-var CodePagesTestsDone = false, CodePages = [];
+var CodePagesTestsDone = false, CodePages = [], q_mark = decodeURIComponent("%EF%BC%9F"), re_process_marks = new RegExp("([!" + q_mark + "])\\.(\\s)", "g");
 if(url=WSH.Arguments.Named.Item("GetSmotrimData")){
     if(!/:\/\/smotrim\.ru.*\/.*video[\/=](\d+)$/.test(url))WSH.Quit();
     with(str=new ActiveXObject("ADODB.Stream")){Type=2; Mode=3;}
     var oExec = WshShell.Exec((json_url='curl.exe --raw "https://player-api.smotrim.ru/api/v1/video/' + (id=RegExp.$1)) + '"');
     while(!oExec.Status || !oExec.StdOut.AtEndOfStream){
-        if(/"title":\s+"([^"]+)"/.test(line = oExec.StdOut.ReadLine()))newText += ". " + DosToWin(decodeURIComponent(encodeURIComponent(RegExp.$1).replace(/(?:%EF%BF%BD){2}/g, "..")));
+        if(/"title":\s+"([^"]+)"/.test(line = oExec.StdOut.ReadLine()))newText += ". " + DosToWin(decodeURIComponent(encodeURIComponent(RegExp.$1).replace(/(?:%EF%BF%BD){2}/g, ".."))).replace(/\?/g, q_mark);
         if(/"m3u8":\s+"([^"]+)"/.test(line))var new_url=RegExp.$1;
     }
     if(new_url && id && json_url)WSH.echo(new_url + "," + id + "," + json_url.slice(16));
-    if(newText)newText = newText.slice(2);
+    if(newText)newText = newText.slice(2).replace(re_process_marks, "$1$2");
 }
 if(WSH.Arguments.Unnamed.Count && (fso.FileExists(fName=WSH.Arguments.Unnamed(0)) || newText)){
     if(1*WSH.Arguments.Named.Item("toUTF-8")){
