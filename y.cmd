@@ -2,8 +2,8 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://vkvideo.ru/video-20648295_456253911
-set head=
+set VideoURL=https://smotrim.ru/video/6016067
+set head=test.
 set suffix=
 set series=%%(series)s. 
 call :set_template
@@ -22,16 +22,18 @@ if exist %tempFileName% goto :normal_process
 for /f "tokens=1,2,3 delims=," %%i in ('cscript /nologo /e:javascript "%~dpnx0" %tempFileName% /GetSmotrimData:"%VideoURL%"') do if not "%%i" == "" set new_url="%%i"&set id=%%j&set json_url=%%k
 if not defined new_url exit /b
 set /p title=<%tempFileName%
-set template=%title% [%id%].%extension%
+set template=%head%%title% [%id%]%suffix%.%extension%
 if exist %tempFileName% del /q %tempFileName%
 set filename="%template%.txt"
 echo %VideoURL% > %filename%
 echo. >> %filename%
 echo %json_url% >> %filename%
 echo %new_url% >> %filename%
+set VideoURL=%new_url%
+echo. >> %filename%
+call %AppPath% --socket-timeout 45 --print formats_table %VideoURL% >> %filename%
 cscript /nologo /e:javascript "%~dpnx0" %filename%
 if -%1- == ---- exit /b
-set VideoURL=%new_url%
 start "yt-dlp: smotrim" %AppPath% -k -o "%template%" --split-chapters --postprocessor-args "SplitChapters+ffmpeg:-map_metadata -1" --video-multistreams --audio-multistreams --windows-filenames --remux-video %extension% --concurrent-fragments 10 --socket-timeout 45 --abort-on-unavailable-fragment --exec "pause " --embed-metadata --format %format% %VideoURL%^&exit/b
 exit /b
 :normal_process
