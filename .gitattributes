@@ -1,2 +1,2 @@
-*.cmd   eol=crlf
-*.html  eol=crlf
+*.cmd   text    eol=crlf
+*.html  text    eol=crlf
