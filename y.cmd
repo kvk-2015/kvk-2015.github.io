@@ -2,7 +2,7 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://smotrim.ru/video/1550494
+set VideoURL=https://smotrim.ru/video/1994980#playing_video=1994980
 set head=
 set suffix=
 set series=%%(series)s. 
@@ -87,7 +87,7 @@ if(url=WSH.Arguments.Named.Item("GetSmotrimData")){
     while(!oExec.Status || !oExec.StdOut.AtEndOfStream)lines = oExec.StdOut.ReadAll().replace(/(["}\d\]]|null),(["{\[])/g, "$1,\r\n$2").split("\r\n");
     for(lineIndex in lines){
         line = lines[lineIndex];
-        if(/"title":\s?"([^"]+)"/.test(line))newText += ". " + DosToWin(decodeURIComponent(encodeURIComponent(RegExp.$1).replace(/(?:%EF%BF%BD){2}/g, ".."))).replace(/\?/g, q_mark);
+        if(/"title":\s?"(.+)"(?:,|$)/.test(line))newText += ". " + DosToWin(decodeURIComponent(encodeURIComponent(RegExp.$1).replace(/(?:%EF%BF%BD){2}/g, ".."))).replace(/\?/g, q_mark).replace(/\\"/g, "'");
         if(/"m3u8":\s?"([^"]+)"/.test(line))var new_url=RegExp.$1;
     }
     if(new_url && id && json_url)WSH.echo(new_url + "," + id + "," + json_url.slice(16));
