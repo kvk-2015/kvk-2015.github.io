@@ -2,8 +2,8 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://smotrim.ru/video/6016067
-set head=test.
+set VideoURL=https://smotrim.ru/video/1550494
+set head=
 set suffix=
 set series=%%(series)s. 
 call :set_template
@@ -79,20 +79,23 @@ goto:eof */
 
 var fso = new ActiveXObject("Scripting.FileSystemObject"), fName = "", newText = "", WshShell = new ActiveXObject("WScript.Shell"), url, id, json_url;
 var CodePagesTestsDone = false, CodePages = [], q_mark = decodeURIComponent("%EF%BC%9F"), re_process_marks = new RegExp("([!" + q_mark + "])\\.(\\s)", "g");
+var lines, lineIndex, line, oExec;
 if(url=WSH.Arguments.Named.Item("GetSmotrimData")){
     if(!/:\/\/smotrim\.ru.*\/.*video[\/=](\d+)$/.test(url))WSH.Quit();
     with(str=new ActiveXObject("ADODB.Stream")){Type=2; Mode=3;}
-    var oExec = WshShell.Exec((json_url='curl.exe --raw "https://player-api.smotrim.ru/api/v1/video/' + (id=RegExp.$1)) + '"');
-    while(!oExec.Status || !oExec.StdOut.AtEndOfStream){
-        if(/"title":\s+"([^"]+)"/.test(line = oExec.StdOut.ReadLine()))newText += ". " + DosToWin(decodeURIComponent(encodeURIComponent(RegExp.$1).replace(/(?:%EF%BF%BD){2}/g, ".."))).replace(/\?/g, q_mark);
-        if(/"m3u8":\s+"([^"]+)"/.test(line))var new_url=RegExp.$1;
+    oExec = WshShell.Exec((json_url='curl.exe --raw "https://player-api.smotrim.ru/api/v1/video/' + (id=RegExp.$1)) + '"');
+    while(!oExec.Status || !oExec.StdOut.AtEndOfStream)lines = oExec.StdOut.ReadAll().replace(/(["}\d\]]|null),(["{\[])/g, "$1,\r\n$2").split("\r\n");
+    for(lineIndex in lines){
+        line = lines[lineIndex];
+        if(/"title":\s?"([^"]+)"/.test(line))newText += ". " + DosToWin(decodeURIComponent(encodeURIComponent(RegExp.$1).replace(/(?:%EF%BF%BD){2}/g, ".."))).replace(/\?/g, q_mark);
+        if(/"m3u8":\s?"([^"]+)"/.test(line))var new_url=RegExp.$1;
     }
     if(new_url && id && json_url)WSH.echo(new_url + "," + id + "," + json_url.slice(16));
     if(newText)newText = newText.slice(2).replace(re_process_marks, "$1$2");
 }
 if(WSH.Arguments.Unnamed.Count && (fso.FileExists(fName=WSH.Arguments.Unnamed(0)) || newText)){
     if(1*WSH.Arguments.Named.Item("toUTF-8")){
-        var oExec = WshShell.Exec('reg.exe query "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Nls\\CodePage" -v ACP');
+        oExec = WshShell.Exec('reg.exe query "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Nls\\CodePage" -v ACP');
         var Windows_codepage = getCodepageName(oExec);
     } else Windows_codepage = "UTF-8";
     with(new ActiveXObject("ADODB.Stream")){Type=2; Mode=3;
@@ -110,8 +113,8 @@ if(1*WSH.Arguments.Named.Item("FORMATRECOMMENDATIONS") && newText){
         "vkvideo.ru:Mobile-Review.com": [/<vkvideo\.ru:Mobile-Review\.com>/, /(^hls\S+_2\D\S*)\s/, /(^hls\S+)\s.+1920x1080\s+25 \|/],
         "rutube.ru:Константин Кулаков": [/<rutube\.ru:Константин Кулаков>/, /(^default-\S+)\s/]
     }
-    for(var lineIndex in lines){
-        var line = lines[lineIndex];
+    for(lineIndex in lines){
+        line = lines[lineIndex];
         if(lineIndex<=1)for(var i in page_specific)if(page_specific[i][0].test(line))
             if(page_specific[i].length==3){audio_regexp = page_specific[i][1]; video_regexp = page_specific[i][2]; break}
             else {regexp = page_specific[i][1]; break}
