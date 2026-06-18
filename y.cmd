@@ -2,7 +2,7 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://smotrim.ru/video/1994980#playing_video=1994980
+set VideoURL=https://smotrim.ru/brand/20872#playing_video=1783228
 set head=
 set suffix=
 set series=%%(series)s. 
@@ -34,7 +34,7 @@ echo. >> %filename%
 call %AppPath% --socket-timeout 45 --print formats_table %VideoURL% >> %filename%
 cscript /nologo /e:javascript "%~dpnx0" %filename%
 if -%1- == ---- exit /b
-start "yt-dlp: smotrim" %AppPath% -k -o "%template%" --split-chapters --postprocessor-args "SplitChapters+ffmpeg:-map_metadata -1" --video-multistreams --audio-multistreams --windows-filenames --remux-video %extension% --concurrent-fragments 10 --socket-timeout 45 --abort-on-unavailable-fragment --exec "pause " --embed-metadata --format %format% %VideoURL%^&exit/b
+start "yt-dlp: smotrim" %AppPath% -k -o "%template%" --replace-in-metadata "title" "playlist" "%title%" --split-chapters --postprocessor-args "SplitChapters+ffmpeg:-map_metadata -1" --video-multistreams --audio-multistreams --windows-filenames --remux-video %extension% --concurrent-fragments 10 --socket-timeout 45 --abort-on-unavailable-fragment --exec "pause " --embed-metadata --format %format% %VideoURL%^&exit/b
 exit /b
 :normal_process
 cscript /nologo /e:javascript "%~dpnx0" %tempFileName%
@@ -79,7 +79,7 @@ goto:eof */
 
 var fso = new ActiveXObject("Scripting.FileSystemObject"), fName = "", newText = "", WshShell = new ActiveXObject("WScript.Shell"), url, id, json_url;
 var CodePagesTestsDone = false, CodePages = [], q_mark = decodeURIComponent("%EF%BC%9F"), re_process_marks = new RegExp("([!" + q_mark + "])\\.(\\s)", "g");
-var lines, lineIndex, line, oExec, double_quotes = decodeURIComponent("%EF%BC%82");
+var lines, lineIndex, line, oExec, double_quotes = decodeURIComponent("%EF%BC%82"), colon = decodeURIComponent("%EF%BC%9A");
 if(url=WSH.Arguments.Named.Item("GetSmotrimData")){
     if(!/:\/\/smotrim\.ru.*\/.*video[\/=](\d+)$/.test(url))WSH.Quit();
     with(str=new ActiveXObject("ADODB.Stream")){Type=2; Mode=3;}
@@ -87,7 +87,8 @@ if(url=WSH.Arguments.Named.Item("GetSmotrimData")){
     while(!oExec.Status || !oExec.StdOut.AtEndOfStream)lines = oExec.StdOut.ReadAll().replace(/(["}\d\]]|null),(["{\[])/g, "$1,\n$2").split("\n");
     for(lineIndex in lines){
         line = lines[lineIndex];
-        if(/"title":\s*"(.+)"(?:,|$)/.test(line))newText += ". " + DosToWin(decodeURIComponent(encodeURIComponent(RegExp.$1).replace(/(?:%EF%BF%BD){2}/g, ".."))).replace(/\?/g, q_mark).replace(/\\"/g, double_quotes);
+        if(/"title":\s*"(.+)"(?:,|$)/.test(line))newText += ". " + DosToWin(decodeURIComponent(encodeURIComponent(RegExp.$1)
+            .replace(/(?:%EF%BF%BD){2}/g, ".."))).replace(/\?/g, q_mark).replace(/\\"/g, double_quotes).replace(/:/g, colon);
         if(/"m3u8":\s*"([^"]+)"/.test(line))var new_url=RegExp.$1;
     }
     if(new_url && id && json_url)WSH.echo(new_url + "," + id + "," + json_url.slice(16));
