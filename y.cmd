@@ -2,7 +2,7 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://smotrim.ru/brand/20872#playing_video=1783228
+set VideoURL=https://smotrim.ru/brand/28963#playing_video=1553112
 set head=
 set suffix=
 set series=%%(series)s. 
@@ -17,12 +17,12 @@ set tempFileName=%random%.tmp
 call %AppPath% -o "%%template:.!=%%" --windows-filenames --socket-timeout 45 --print-to-file filename %%tempFileName%% --skip-download %%VideoURL%%
 if not errorlevel 0 if exist %tempFileName% del /q %tempFileName%
 if exist %tempFileName% goto :normal_process
-:: Пример временного "патча", когда yt-dlp ещё не может выполнить скачивание, например, из-за редизайна сайта,
-:: как пока обстоят дела для новых видео на smotrim.ru, но описание изменений api уже можно найти
-for /f "tokens=1,2,3 delims=," %%i in ('cscript /nologo /e:javascript "%~dpnx0" %tempFileName% /GetSmotrimData:"%VideoURL%"') do if not "%%i" == "" set new_url="%%i"&set id=%%j&set json_url=%%k
+:: Пример сохранения длительности видео в метаданных для создания оглавления
+:: после редизайна сайта smotrim.ru для просмотра в соответствии с лицензией
+for /f "tokens=1,2,3,4 delims=," %%i in ('cscript /nologo /e:javascript "%~dpnx0" %tempFileName% /GetSmotrimData:"%VideoURL%"') do if not "%%i" == "" set new_url="%%i"&set id=%%j&set json_url=%%k&set duration=%%l
 if not defined new_url exit /b
 set /p title=<%tempFileName%
-set template=%head%%title% [%id%]%suffix%.%extension%
+set template=%head%%title% [+%id%]%suffix%.%extension%
 if exist %tempFileName% del /q %tempFileName%
 set filename="%template%.txt"
 echo %VideoURL% > %filename%
@@ -34,7 +34,7 @@ echo. >> %filename%
 call %AppPath% --socket-timeout 45 --print formats_table %VideoURL% >> %filename%
 cscript /nologo /e:javascript "%~dpnx0" %filename%
 if -%1- == ---- exit /b
-start "yt-dlp: smotrim" %AppPath% -k -o "%template%" --replace-in-metadata "title" "playlist" "%title%" --split-chapters --postprocessor-args "SplitChapters+ffmpeg:-map_metadata -1" --video-multistreams --audio-multistreams --windows-filenames --remux-video %extension% --concurrent-fragments 10 --socket-timeout 45 --abort-on-unavailable-fragment --exec "pause " --embed-metadata --format %format% %VideoURL%^&exit/b
+start "yt-dlp: smotrim" %AppPath% -k -o "%template%" --replace-in-metadata "title" "playlist" "%title%" --windows-filenames --remux-video %extension% --concurrent-fragments 10 --socket-timeout 45 --abort-on-unavailable-fragment --exec "pause " --embed-metadata --postprocessor-args "Metadata+ffmpeg:-metadata duration_string=%duration%" --format %format% %VideoURL%^&exit/b
 exit /b
 :normal_process
 cscript /nologo /e:javascript "%~dpnx0" %tempFileName%
@@ -80,7 +80,7 @@ goto:eof */
 var fso = new ActiveXObject("Scripting.FileSystemObject"), fName = "", newText = "", WshShell = new ActiveXObject("WScript.Shell"), url, id, json_url;
 var CodePagesTestsDone = false, CodePages = [], q_mark = decodeURIComponent("%EF%BC%9F"), re_process_marks = new RegExp("([!" + q_mark + "])\\.(\\s)", "g");
 var lines, lineIndex, line, oExec, double_quotes = decodeURIComponent("%EF%BC%82"), colon = decodeURIComponent("%EF%BC%9A");
-if(url=WSH.Arguments.Named.Item("GetSmotrimData")){
+if(url=WSH.Arguments.Named.Item("GetSmotrimData")){var duration="";
     if(!/:\/\/smotrim\.ru.*\/.*video[\/=](\d+)$/.test(url))WSH.Quit();
     with(str=new ActiveXObject("ADODB.Stream")){Type=2; Mode=3;}
     oExec = WshShell.Exec((json_url='curl.exe --raw "https://player-api.smotrim.ru/api/v1/video/' + (id=RegExp.$1)) + '"');
@@ -89,9 +89,12 @@ if(url=WSH.Arguments.Named.Item("GetSmotrimData")){
         line = lines[lineIndex];
         if(/"title":\s*"(.+)"(?:,|$)/.test(line))newText += ". " + DosToWin(decodeURIComponent(encodeURIComponent(RegExp.$1)
             .replace(/(?:%EF%BF%BD){2}/g, ".."))).replace(/\?/g, q_mark).replace(/\\"/g, double_quotes).replace(/:/g, colon);
-        if(/"m3u8":\s*"([^"]+)"/.test(line))var new_url=RegExp.$1;
+        if(/"m3u8":\s*"([^"]+)"/.test(line))var new_url = RegExp.$1;
+        if(!duration && /"duration":\s*(\d+)/.test(line)){dI = parseInt(RegExp.$1, 10); var HH = Math.floor(dI/3600); dI -= HH*3600;
+            var MM = Math.floor(dI/60); dI -= MM*60; duration = "" + HH + ":" + MM + ":" + dI;
+        }
     }
-    if(new_url && id && json_url)WSH.echo(new_url + "," + id + "," + json_url.slice(16));
+    if(new_url && id && json_url)WSH.echo(new_url + "," + id + "," + json_url.slice(16) + "," + duration);
     if(newText)newText = newText.slice(2).replace(re_process_marks, "$1$2");
 }
 if(WSH.Arguments.Unnamed.Count && (fso.FileExists(fName=WSH.Arguments.Unnamed(0)) || newText)){
