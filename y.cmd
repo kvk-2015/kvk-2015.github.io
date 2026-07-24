@@ -90,8 +90,8 @@ if(url=WSH.Arguments.Named.Item("GetSmotrimData")){var duration="";
         if(/"title":\s*"(.+)"(?:,|$)/.test(line))newText += ". " + DosToWin(decodeURIComponent(encodeURIComponent(RegExp.$1)
             .replace(/(?:%EF%BF%BD){2}/g, ".."))).replace(/\?/g, q_mark).replace(/\\"/g, double_quotes).replace(/:/g, colon);
         if(/"m3u8":\s*"([^"]+)"/.test(line))var new_url = RegExp.$1;
-        if(!duration && /"duration":\s*(\d+)/.test(line)){dI = parseInt(RegExp.$1, 10); var HH = Math.floor(dI/3600); dI -= HH*3600;
-            var MM = Math.floor(dI/60); dI -= MM*60; duration = "" + HH + ":" + MM + ":" + dI;
+        if(!duration && /"duration":\s*(\d+)/.test(line)){dI = parseInt(RegExp.$1, 10); var HH = Math.floor(dI/3600); dI -= HH * 3600;
+            var MM = Math.floor(dI/60); dI -= MM * 60; duration = "" + HH + ":" + ("0" + MM).slice(-2) + ":" + ("0" + dI).slice(-2);
         }
     }
     if(new_url && id && json_url)WSH.echo(new_url + "," + id + "," + json_url.slice(16) + "," + duration);
