@@ -2,7 +2,7 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://smotrim.ru/brand/28963#playing_video=1553112
+set VideoURL=https://smotrim.ru/brand/67607#playing_video=2627918
 set head=
 set suffix=
 set series=%%(series)s. 
@@ -17,8 +17,7 @@ set tempFileName=%random%.tmp
 call %AppPath% -o "%%template:.!=%%" --windows-filenames --socket-timeout 45 --print-to-file filename %%tempFileName%% --skip-download %%VideoURL%%
 if not errorlevel 0 if exist %tempFileName% del /q %tempFileName%
 if exist %tempFileName% goto :normal_process
-:: Пример сохранения длительности видео в метаданных для создания оглавления
-:: после редизайна сайта smotrim.ru для просмотра в соответствии с лицензией
+:: после редизайна сайта smotrim.ru
 for /f "tokens=1,2,3,4 delims=," %%i in ('cscript /nologo /e:javascript "%~dpnx0" %tempFileName% /GetSmotrimData:"%VideoURL%"') do if not "%%i" == "" set new_url="%%i"&set id=%%j&set json_url=%%k&set duration=%%l
 if not defined new_url exit /b
 set /p title=<%tempFileName%
@@ -89,7 +88,7 @@ if(url=WSH.Arguments.Named.Item("GetSmotrimData")){var duration="";
         line = lines[lineIndex];
         if(/"title":\s*"(.+)"(?:,|$)/.test(line))newText += ". " + DosToWin(decodeURIComponent(encodeURIComponent(RegExp.$1)
             .replace(/(?:%EF%BF%BD){2}/g, ".."))).replace(/\?/g, q_mark).replace(/\\"/g, double_quotes).replace(/:/g, colon);
-        if(/"m3u8":\s*"([^"]+)"/.test(line))var new_url = RegExp.$1;
+        if(!new_url && /"m3u8":\s*"(.*episode[^"]+)"/.test(line))var new_url = RegExp.$1;
         if(!duration && /"duration":\s*(\d+)/.test(line)){dI = parseInt(RegExp.$1, 10); var HH = Math.floor(dI/3600); dI -= HH * 3600;
             var MM = Math.floor(dI/60); dI -= MM * 60; duration = "" + HH + ":" + ("0" + MM).slice(-2) + ":" + ("0" + dI).slice(-2);
         }
