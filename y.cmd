@@ -2,7 +2,7 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://smotrim.ru/brand/67607#playing_video=2627918
+set VideoURL=https://smotrim.ru/brand/65435#playing_video=2236235
 set head=
 set suffix=
 set series=%%(series)s. 
@@ -77,7 +77,8 @@ goto:eof */
 // сохраните его в кодировке Windows-1251, если она установлена на вашем компьютере
 
 var fso = new ActiveXObject("Scripting.FileSystemObject"), fName = "", newText = "", WshShell = new ActiveXObject("WScript.Shell"), url, id, json_url;
-var CodePagesTestsDone = false, CodePages = [], q_mark = decodeURIComponent("%EF%BC%9F"), re_process_marks = new RegExp("([!" + q_mark + "])\\.(\\s)", "g");
+var CodePagesTestsDone = false, CodePages = [], q_mark = decodeURIComponent("%EF%BC%9F"), ellipsis = decodeURIComponent("%E2%80%A6");
+var re_process_marks = new RegExp("([!" + q_mark + ellipsis + "])\\.(\\s)", "g");
 var lines, lineIndex, line, oExec, double_quotes = decodeURIComponent("%EF%BC%82"), colon = decodeURIComponent("%EF%BC%9A");
 if(url=WSH.Arguments.Named.Item("GetSmotrimData")){var duration="";
     if(!/:\/\/smotrim\.ru.*\/.*video[\/=](\d+)$/.test(url))WSH.Quit();
@@ -93,8 +94,8 @@ if(url=WSH.Arguments.Named.Item("GetSmotrimData")){var duration="";
             var MM = Math.floor(dI/60); dI -= MM * 60; duration = "" + HH + ":" + ("0" + MM).slice(-2) + ":" + ("0" + dI).slice(-2);
         }
     }
-    if(new_url && id && json_url)WSH.echo(new_url + "," + id + "," + json_url.slice(16) + "," + duration);
-    if(newText)newText = newText.slice(2).replace(re_process_marks, "$1$2");
+    if(new_url && id && json_url && duration)WSH.echo(new_url + "," + id + "," + json_url.slice(16) + "," + duration);
+    if(newText)newText = newText.slice(2).replace(re_process_marks, "$1$2").replace(/(\.{3})\./g, "$1");
 }
 if(WSH.Arguments.Unnamed.Count && (fso.FileExists(fName=WSH.Arguments.Unnamed(0)) || newText)){
     if(1*WSH.Arguments.Named.Item("toUTF-8")){
