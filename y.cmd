@@ -2,7 +2,7 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://smotrim.ru/brand/65435#playing_video=2236235
+set VideoURL=https://smotrim.ru/brand/27730#playing_video=1193082
 set head=
 set suffix=
 set series=%%(series)s. 
@@ -80,20 +80,22 @@ var fso = new ActiveXObject("Scripting.FileSystemObject"), fName = "", newText =
 var CodePagesTestsDone = false, CodePages = [], q_mark = decodeURIComponent("%EF%BC%9F"), ellipsis = decodeURIComponent("%E2%80%A6");
 var re_process_marks = new RegExp("([!" + q_mark + ellipsis + "])\\.(\\s)", "g");
 var lines, lineIndex, line, oExec, double_quotes = decodeURIComponent("%EF%BC%82"), colon = decodeURIComponent("%EF%BC%9A");
-if(url=WSH.Arguments.Named.Item("GetSmotrimData")){var duration="";
+if(url=WSH.Arguments.Named.Item("GetSmotrimData")){var duration = "", s = "", is_debug = false, anons_flag = 0;
     if(!/:\/\/smotrim\.ru.*\/.*video[\/=](\d+)$/.test(url))WSH.Quit();
     with(str=new ActiveXObject("ADODB.Stream")){Type=2; Mode=3;}
     oExec = WshShell.Exec((json_url='curl.exe --raw "https://player-api.smotrim.ru/api/v1/video/' + (id=RegExp.$1)) + '"');
     while(!oExec.Status || !oExec.StdOut.AtEndOfStream)lines = oExec.StdOut.ReadAll().replace(/(["}\d\]]|null),(["{\[])/g, "$1,\n$2").split("\n");
     for(lineIndex in lines){
-        line = lines[lineIndex];
-        if(/"title":\s*"(.+)"(?:,|$)/.test(line))newText += ". " + DosToWin(decodeURIComponent(encodeURIComponent(RegExp.$1)
+        if(!/"/.test(line=lines[lineIndex]))continue; s += line + "\r\n";
+        if(/"anonsConfig"/.test(line))anons_flag = 1; else anons_flag--;
+        if(/"title":\s*"(.+)"(?:,|$)/.test(line) && anons_flag)newText += ". " + DosToWin(decodeURIComponent(encodeURIComponent(RegExp.$1)
             .replace(/(?:%EF%BF%BD){2}/g, ".."))).replace(/\?/g, q_mark).replace(/\\"/g, double_quotes).replace(/:/g, colon);
         if(!new_url && /"m3u8":\s*"(.*episode[^"]+)"/.test(line))var new_url = RegExp.$1;
         if(!duration && /"duration":\s*(\d+)/.test(line)){dI = parseInt(RegExp.$1, 10); var HH = Math.floor(dI/3600); dI -= HH * 3600;
             var MM = Math.floor(dI/60); dI -= MM * 60; duration = "" + HH + ":" + ("0" + MM).slice(-2) + ":" + ("0" + dI).slice(-2);
         }
     }
+    if(is_debug)fso.CreateTextFile("smotrim_json.txt", true, true).Write(s);
     if(new_url && id && json_url && duration)WSH.echo(new_url + "," + id + "," + json_url.slice(16) + "," + duration);
     if(newText)newText = newText.slice(2).replace(re_process_marks, "$1$2").replace(/(\.{3})\./g, "$1");
 }
