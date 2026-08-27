@@ -1,0 +1,15 @@
+﻿//  Проверка не просматривали ли уже видео, скачанное недавно при помощи yt-dlp (имена файлов, из которых для целей поиска выделяется только id,
+// передаются в виде параметров командной строки). Предполагается, что просмотренные видео удаляются вручную из истории файлов Windosws 10 из-за сбоев,
+// в то же время информация о них продолжает присутствовать в базе данных.
+
+var fso = new ActiveXObject("Scripting.FileSystemObject"), WshShell = new ActiveXObject("WScript.Shell"), s = "", i, head = decodeURIComponent("%C3%BE%D0%81%C5%80");
+with(fso.OpenTextFile(WshShell.ExpandEnvironmentStrings("Y:\\%USERNAME%\\%USERDOMAIN%\\Configuration\\Catalog1.edb"), 1, false, -1)){dbase = ReadAll(); Close()}
+with(WSH.Arguments)for(i=0; i<length; i++)if(fso.FileExists(fn=Item(i))){
+    var result, found = false, index = 0, prev_names = [];
+    var re = new RegExp(head + "([^" + head.slice(0, 1) + "]+\\[\\+?" + fn.replace(/^.+\[\+?/, "").replace(/\]\..+$/ , "\\][\\.!a-z]+)"), "g");
+    while(result=re.exec(dbase))if(maybe_found = result.lastIndex - index > 1024){
+        prev_names.push(RegExp.$1 + "\n"); found = found ? found || maybe_found : index; index = result.lastIndex;
+    }
+    if(found)s += "\n------\n" + prev_names.slice(0, -1) + fn;
+}
+if(s)WSH.echo(s.slice(1));
