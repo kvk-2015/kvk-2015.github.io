@@ -7,8 +7,8 @@ with(fso.OpenTextFile(WshShell.ExpandEnvironmentStrings("Y:\\%USERNAME%\\%USERDO
 with(WSH.Arguments)for(i=0; i<length; i++)if(fso.FileExists(fn=Item(i))){
     var result, found = false, index = 0, prev_names = [];
     var re = new RegExp(head + "([^" + head.slice(0, 1) + "]+\\[\\+?" + fn.replace(/^.+\[\+?/, "").replace(/\]\..+$/ , "\\][\\.!a-z]+)"), "g");
-    while(result=re.exec(dbase))if(maybe_found = result.lastIndex - index > 1024){
-        prev_names.push(RegExp.$1 + "\n"); found = found ? found || maybe_found : index; index = result.lastIndex;
+    while(result=re.exec(dbase))if(result.lastIndex - index > 1024){
+        prev_names.push(RegExp.$1 + "\n"); found |= index; index = result.lastIndex;
     }
     if(found)s += "\n------\n" + prev_names.slice(0, -1) + fn;
 }
