@@ -2,13 +2,14 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://vkvideo.ru/video-223018263_456240060
+set VideoURL=https://smotrim.ru/video/775375
 set head=
 set suffix=
 set series=%%(series)s. 
 call :set_template
 set format=b
 set enable_format_recommendations=1
+set test_prev_downloaded=1
 set extension=mkv
 set AppPath=D:\kvk\Utilities\GitHub\yt-dlp\yt-dlp.cmd
 if not exist %AppPath% set AppPath=yt-dlp.exe
@@ -32,6 +33,7 @@ set VideoURL=%new_url%
 echo. >> %filename%
 call %AppPath% --socket-timeout 45 --print formats_table %VideoURL% >> %filename%
 cscript /nologo /e:javascript "%~dpnx0" %filename%
+if %test_prev_downloaded% == 1 call :is_prev_downloaded %filename%
 if -%1- == ---- exit /b
 start "yt-dlp: smotrim" %AppPath% -k -o "%template%" --replace-in-metadata "title" "playlist" "%title%" --windows-filenames --remux-video %extension% --concurrent-fragments 10 --socket-timeout 45 --abort-on-unavailable-fragment --exec "pause " --embed-metadata --postprocessor-args "Metadata+ffmpeg:-metadata duration_string=%duration%" --format %format% %VideoURL%^&exit/b
 exit /b
@@ -58,11 +60,18 @@ if not errorlevel 0 exit /b
 call :size "%filename%"
 if %tempsize% == %filesize% exit /b
 for /f %%i in ('cscript /nologo /e:javascript "%~dpnx0" "%filename%" /FORMATRECOMMENDATIONS:%enable_format_recommendations%') do if defined enable_format_recommendations if "%enable_format_recommendations%" == "1" if not "%%i" == "" set format=%%i
+if %test_prev_downloaded% == 1 call :is_prev_downloaded "%filename%"
 if -%1- == ---- exit /b
 rem --limit-rate 8.5M
 start "yt-dlp: %VideoURL%" %AppPath% -k -o "%template%" --split-chapters --postprocessor-args "SplitChapters+ffmpeg:-map_metadata -1" --video-multistreams --audio-multistreams --windows-filenames --remux-video %extension% --concurrent-fragments 10 --socket-timeout 45 --abort-on-unavailable-fragment --exec "pause " --embed-metadata --format %format% %VideoURL% ^&exit/b
 :set_template
 set template=%head%%series%%%(title)s [%%(id)s]%suffix%.%%(ext)s
+exit /b
+:is_prev_downloaded
+set script=.\Search.js
+if not exist %script% exit /b
+wscript.exe %script% %1
+if errorlevel 2 exit
 exit /b
 :size
 set filesize=%~z1
