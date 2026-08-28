@@ -4,7 +4,7 @@ chcp 65001 >nul
 setlocal
 set VideoURL=https://smotrim.ru/video/775375
 set head=
-set suffix=
+set suffix=.!
 set series=%%(series)s. 
 call :set_template
 set format=b
@@ -24,7 +24,7 @@ if not defined new_url exit /b
 set /p title=<%tempFileName%
 set template=%head%%title% [+%id%]%suffix%.%extension%
 if exist %tempFileName% del /q %tempFileName%
-set filename="%template%.txt"
+set filename="%template:.!=%.txt"
 echo %VideoURL% > %filename%
 echo. >> %filename%
 echo %json_url% >> %filename%
