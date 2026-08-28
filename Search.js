@@ -3,10 +3,13 @@
 // в то же время информация о них продолжает присутствовать в базе данных.
 // Если contains_only = true, просто проверяется наличие указанного id в базе, а не сравнение отдалённости по оси времени условно.
 
-var fso = new ActiveXObject("Scripting.FileSystemObject"), WshShell = new ActiveXObject("WScript.Shell"), s = "", i;
+var fso = new ActiveXObject("Scripting.FileSystemObject"), WshShell = new ActiveXObject("WScript.Shell"), s = "", i, fn, dbase, dbases = [];
 var contains_only = true, head = decodeURIComponent("%C3%BE%D0%81%C5%80");
-with(fso)if(FileExists(fn=WshShell.ExpandEnvironmentStrings("Y:\\%USERNAME%\\%USERDOMAIN%\\Configuration\\Catalog1.edb")))
-    with(OpenTextFile(fn, 1, false, -1)){dbase = ReadAll(); Close()} else WSH.Quit();
+with(fso)if(FileExists(fn=WshShell.ExpandEnvironmentStrings("Y:\\%USERNAME%\\%USERDOMAIN%\\Configuration\\Catalog1.edb"))){
+    for(i=2; i; i--)if(FileExists(fn=fn.slice(0, -5)+i+".edb"))dbases.push([fn, GetFile(fn).DateLastModified]);
+    dbases.sort(function (a, b){return b[1]-a[1]});
+    with(OpenTextFile(dbases[0][0], 1, false, -1)){dbase = ReadAll(); Close()}
+} else WSH.Quit();
 with(WSH.Arguments)for(i=0; i<length; i++)if(fso.FileExists(fn=Item(i))){
     var result, found = false, index = contains_only, prev_names = [];
     var re = new RegExp(head + "([^" + head.slice(0, 1) + "]+\\[\\+?" + fn.replace(/^.+\[\+?/, "").replace(/\]\..+$/,
