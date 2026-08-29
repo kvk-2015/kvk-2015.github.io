@@ -1,15 +1,24 @@
 @set @x=0 /*
 @echo off
 chcp 65001 >nul
+setlocal
 .\yt-dlp.exe -U
+call :update_script "Обновить скрипты для скачивания видео.cmd" new
 call :update_script y.cmd /coding:Windows-1251 /rep:"^(set test_prev_downloaded=)1$`$10;(^set extension=)\S+$`$1mp4"
 ::call :update_script Search.js
 exit /b
 :update_script
-del /f %1.bak 2>nul
-rename .\%1 %1.bak 2>nul
-curl.exe  --output .\%1 https://kvk-2015.github.io/%1
-cscript /nologo /e:javascript "%~dpnx0" %*
+if -%2- == -new- (set new=.new) else (set new=)
+set output_file=%1
+set output_file=%output_file:"=%%new%
+del /f "%output_file%.bak" 2>nul
+rename ".\%output_file%" "%output_file%.bak" 2>nul
+set page=%1
+setlocal enabledelayedexpansion
+set page=!page: =%%20!
+setlocal disabledelayedexpansion
+curl.exe  --output ".\%output_file%" https://kvk-2015.github.io/%page%
+if not defined new cscript /nologo /e:javascript "%~dpnx0" %*
 goto:eof */
 
 // Для скачанного скрипта можно выполнить патчинг согласно вашим предпочтениям
@@ -28,16 +37,21 @@ if(WSH.Arguments.Unnamed.Count && (fso.FileExists(scriptName=WSH.Arguments.Unnam
             processing.push([new RegExp(pair[0]), pair[1]]);
         }
     }
-    with(new ActiveXObject("ADODB.Stream")){Type=2; Mode=3;
-        if(coding || processing){Open(); Charset="utf-8"; LoadFromFile(scriptName); Position=0; newText=ReadText().replace(/\r\n|\n|\r/g, "\r\n"); Close();
+    with(new ActiveXObject("ADODB.Stream")){Type = 2; Mode = 3;
+        if(coding || processing){Open(); Charset = "utf-8"; LoadFromFile(scriptName); Position = 0; newText=ReadText().replace(/\r\n|\n|\r/g, "\r\n"); Close();
             lines = newText.split("\r\n"); newText = "";
             for(lineIndex in lines){
                 line = lines[lineIndex];
                 for(var i=0; i<processing.length; i++)line = line.replace(processing[i][0], processing[i][1]);
                 newText += "\r\n" + line;
             }
-            if(fso.FileExists(scriptName))fso.DeleteFile(scriptName);
-            Open(); Charset=coding || "utf-8"; Position=0; WriteText(newText.slice(2)); SaveToFile(scriptName); Close();
+            Open(); Charset = coding || "utf-8"; Position = 0; WriteText(newText.slice(2)); SaveToFile(scriptName, 2); Close();
+            if(!coding){
+                Mode = 3; Type = 1; Open(); LoadFromFile(scriptName); Position = 3;
+                var new_staream = new ActiveXObject("ADODB.Stream");
+                new_staream.Mode = 3; new_staream.Type = 1; new_staream.Open(); CopyTo(new_staream); Close();
+                new_staream.SaveToFile(scriptName, 2); new_staream.Close();
+            }
         }
     }
 }
