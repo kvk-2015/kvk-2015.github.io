@@ -2,14 +2,18 @@
 @echo off
 chcp 65001 >nul
 setlocal
+:: Договор публичной оферты на оказание услуг технической поддержки.docx: https://vk.cc/cZIZWO
+call :update_file "Платёжная информация.html"
+call :update_file "Некоторые отсоединённые GnuPG подписи/Платёжная информация.html.sig"
 .\yt-dlp.exe -U
-call :update_script "Обновить скрипты для скачивания видео.cmd" new
-call :update_script y.cmd /coding:Windows-1251 /rep:"^(set test_prev_downloaded=)1$`$10;(^set extension=)\S+$`$1mp4"
-::call :update_script Search.js
+call :update_file "Обновить скрипты для скачивания видео.cmd" new
+call :update_file y.cmd /coding:Windows-1251 /rep:"^(set test_prev_downloaded=)1$`$10;(^set extension=)\S+$`$1mp4"
+::call :update_file Search.js
 exit /b
-:update_script
+:update_file
 if -%2- == -new- (set new=.new) else (set new=)
 set output_file=%1
+set output_file=%output_file:*и/=%
 set output_file=%output_file:"=%%new%
 del /f "%output_file%.bak" 2>nul
 rename ".\%output_file%" "%output_file%.bak" 2>nul
