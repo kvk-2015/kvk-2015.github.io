@@ -2,7 +2,7 @@
 @echo off
 chcp 65001 >nul
 setlocal
-:: Договор публичной оферты на оказание услуг технической поддержки.docx: https://vk.cc/cZIZWO
+:: Договор публичной оферты на оказание услуг технической поддержки.docx: https://disk.yandex.ru/i/9S5LApHY89QuDg
 call :update_file "Платёжная информация.html"
 call :update_file "Некоторые отсоединённые GnuPG подписи/Платёжная информация.html.sig"
 .\yt-dlp.exe -U
