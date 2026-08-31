@@ -4,7 +4,7 @@ chcp 65001 >nul
 setlocal
 :: Договор публичной оферты на оказание услуг технической поддержки.docx: https://disk.yandex.ru/i/9S5LApHY89QuDg
 call :update_file "Платёжная информация.html"
-call :update_file "Некоторые отсоединённые GnuPG подписи/Платёжная информация.html.sig" /skip
+call :update_file "Некоторые отсоединённые GnuPG подписи/Платёжная информация.html.sig" /raw
 ::  Для использования yt-dlp форкните/клонируйте соответствующий репозиторий или скачайте оттуда екзешник: https://github.com/yt-dlp/yt-dlp
 :: Он потом будет автоматически обновляться этим батником (при отсутствии проблем с блокированием интернета)
 .\yt-dlp.exe -U
@@ -38,7 +38,7 @@ goto:eof */
 
 // Для скачанного скрипта можно выполнить патчинг согласно вашим предпочтениям
 
-if(WSH.Arguments.Named.Exists("skip"))WSH.Quit();
+if(WSH.Arguments.Named.Exists("raw"))WSH.Quit();
 var fso = new ActiveXObject("Scripting.FileSystemObject"), WshShell = new ActiveXObject("WScript.Shell"), newText, CodePagesTestsDone = false, CodePages = [];
 var str, coding = WSH.Arguments.Named.Item("coding"), processing = [], pair, lineIndex, line, lines, splitter = "`";
 
@@ -64,9 +64,9 @@ if(WSH.Arguments.Unnamed.Count && (fso.FileExists(scriptName=WSH.Arguments.Unnam
             Open(); Charset = coding || "utf-8"; Position = 0; WriteText(newText.slice(2)); SaveToFile(scriptName, 2); Close();
             if(!coding){
                 Mode = 3; Type = 1; Open(); LoadFromFile(scriptName); Position = 3;
-                var new_staream = new ActiveXObject("ADODB.Stream");
-                new_staream.Mode = 3; new_staream.Type = 1; new_staream.Open(); CopyTo(new_staream); Close();
-                new_staream.SaveToFile(scriptName, 2); new_staream.Close();
+                var new_stream = new ActiveXObject("ADODB.Stream");
+                new_stream.Mode = 3; new_stream.Type = 1; new_stream.Open(); CopyTo(new_stream); Close();
+                new_stream.SaveToFile(scriptName, 2); new_stream.Close();
             }
         }
     }
