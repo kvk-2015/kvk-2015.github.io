@@ -4,20 +4,26 @@ chcp 65001 >nul
 setlocal
 :: Договор публичной оферты на оказание услуг технической поддержки.docx: https://disk.yandex.ru/i/9S5LApHY89QuDg
 call :update_file "Платёжная информация.html"
-call :update_file "Некоторые отсоединённые GnuPG подписи/Платёжная информация.html.sig"
+call :update_file "Некоторые отсоединённые GnuPG подписи/Платёжная информация.html.sig" /skip
 ::  Для использования yt-dlp форкните/клонируйте соответствующий репозиторий или скачайте оттуда екзешник: https://github.com/yt-dlp/yt-dlp
 :: Он потом будет автоматически обновляться этим батником (при отсутствии проблем с блокированием интернета)
 .\yt-dlp.exe -U
 call :update_file "Обновить скрипты для скачивания видео.cmd" new
 call :update_file y.cmd /coding:Windows-1251 /rep:"^(set test_prev_downloaded=)1$`$10;(^set extension=)\S+$`$1mp4"
+call :update_file "Monitor2-2013/refs/heads/main/Video processing/Оглавление.js" https://raw.githubusercontent.com/kvk-2015 /coding:Windows-1251
 ::call :update_file Search.js
 exit /b
 ::  Если вам будут мной предоставлены в рамках технической поддержки индивидуально настроенные под ваши потребности скрипты,
 :: обновить их можно будет при помощи https://download.kde.org/stable/kdiff3/ Методику или сами найдёте, или я подскажу...
 :update_file
-if -%2- == -new- (set new=.new) else (set new=)
+set head=%2
+set is_url=
+if -%2- == -new- (set new=.new) else (set new=&if not -%2- == -- (set head=%head:~10%&set is_url=%head:*-=%))
+set head=https://kvk-2015.github.io
+if -%is_url%- == -2015- set head=%2
 set output_file=%1
 set output_file=%output_file:*и/=%
+set output_file=%output_file:*g/=%
 set output_file=%output_file:"=%%new%
 del /f "%output_file%.bak" 2>nul
 rename ".\%output_file%" "%output_file%.bak" 2>nul
@@ -25,12 +31,14 @@ set page=%1
 setlocal enabledelayedexpansion
 set page=!page: =%%20!
 setlocal disabledelayedexpansion
-curl.exe  --output ".\%output_file%" https://kvk-2015.github.io/%page%
-if not defined new cscript /nologo /e:javascript "%~dpnx0" %*
+set page=%page:"=%
+curl.exe --output ".\%output_file%" %head%/%page%
+if not defined new cscript /nologo /e:javascript "%~dpnx0" ".\%output_file%" %2 %3 %4 %5 %6 %7 %8 %9
 goto:eof */
 
 // Для скачанного скрипта можно выполнить патчинг согласно вашим предпочтениям
 
+if(WSH.Arguments.Named.Exists("skip"))WSH.Quit();
 var fso = new ActiveXObject("Scripting.FileSystemObject"), WshShell = new ActiveXObject("WScript.Shell"), newText, CodePagesTestsDone = false, CodePages = [];
 var str, coding = WSH.Arguments.Named.Item("coding"), processing = [], pair, lineIndex, line, lines, splitter = "`";
 
