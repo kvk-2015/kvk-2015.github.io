@@ -5,11 +5,15 @@ setlocal
 :: Договор публичной оферты на оказание услуг технической поддержки.docx: https://disk.yandex.ru/i/9S5LApHY89QuDg
 call :update_file "Платёжная информация.html"
 call :update_file "Некоторые отсоединённые GnuPG подписи/Платёжная информация.html.sig"
+::  Для использования yt-dlp форкните/клонируйте соответствующий репозиторий или скачайте оттуда екзешник: https://github.com/yt-dlp/yt-dlp
+:: Он потом будет автоматически обновляться этим батником (при отсутствии проблем с блокированием интернета)
 .\yt-dlp.exe -U
 call :update_file "Обновить скрипты для скачивания видео.cmd" new
 call :update_file y.cmd /coding:Windows-1251 /rep:"^(set test_prev_downloaded=)1$`$10;(^set extension=)\S+$`$1mp4"
 ::call :update_file Search.js
 exit /b
+::  Если вам будут мной предоставлены в рамках технической поддержки индивидуально настроенные под ваши потребности скрипты,
+:: обновить их можно будет при помощи https://download.kde.org/stable/kdiff3/ Методику или сами найдёте, или я подскажу...
 :update_file
 if -%2- == -new- (set new=.new) else (set new=)
 set output_file=%1
