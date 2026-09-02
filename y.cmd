@@ -2,9 +2,9 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://smotrim.ru/video/775375
+set VideoURL=https://vkvideo.ru/video-223018263_456239886
 set head=
-set suffix=.!
+set suffix=
 set series=%%(series)s. 
 call :set_template
 set format=b
@@ -124,7 +124,7 @@ if(1*WSH.Arguments.Named.Item("FORMATRECOMMENDATIONS") && newText){
     var lines = newText.split("\r\n"), recommended_audio_format = "", recommended_video_format = "", recommended_format = "";
     var audio_regexp = "", video_regexp = "", regexp = "", page_specific = {
         "AM_Live,interviews_on_vkvideo":[/:\/\/vkvideo\.ru\/video-(?:21732035|20648295|35758136|223018263)_/,
-                                        /(^hls\S+_2\D\S*)\s/, /(^hls\S+)\s.+\D[14-9]\d{2,3}x\d+\s+(?:25|30) \|/],
+                                        /(^hls\S+_2\D\S*)\s/, /(^hls\S+)\s.+\D[14-9]\d{2,3}x\d+\s+(?:2[45]|30) \|/],
         "vkvideo.ru:Mobile-Review.com": [/<vkvideo\.ru:Mobile-Review\.com>/, /(^hls\S+_2\D\S*)\s/, /(^hls\S+)\s.+1920x1080\s+25 \|/],
         "rutube.ru:Константин Кулаков": [/<rutube\.ru:Константин Кулаков>/, /(^default-\S+)\s/]
     }
