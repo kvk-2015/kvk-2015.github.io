@@ -2,7 +2,7 @@
 @echo off
 chcp 65001 >nul
 setlocal
-set VideoURL=https://vkvideo.ru/video-223018263_456239886
+set VideoURL=https://smotrim.ru/brand/75759#playing_video=6069963
 set head=
 set suffix=
 set series=%%(series)s. 
@@ -92,7 +92,7 @@ var lines, lineIndex, line, oExec, double_quotes = decodeURIComponent("%EF%BC%82
 if(url=WSH.Arguments.Named.Item("GetSmotrimData")){var duration = "", s = "", is_debug = false, anons_flag = 0;
     if(!/:\/\/smotrim\.ru.*\/.*video[\/=](\d+)$/.test(url))WSH.Quit();
     with(str=new ActiveXObject("ADODB.Stream")){Type=2; Mode=3;}
-    oExec = WshShell.Exec((json_url='curl.exe --raw "https://player-api.smotrim.ru/api/v1/video/' + (id=RegExp.$1)) + '"');
+    oExec = WshShell.Exec((json_url='curl.exe --silent --raw "https://player-api.smotrim.ru/api/v1/video/' + (id=RegExp.$1)) + '"');
     while(!oExec.Status || !oExec.StdOut.AtEndOfStream)lines = oExec.StdOut.ReadAll().replace(/(["}\d\]]|null),(["{\[])/g, "$1,\n$2").split("\n");
     for(lineIndex in lines){
         if(!/"/.test(line=lines[lineIndex]))continue; s += line + "\r\n";
@@ -105,7 +105,7 @@ if(url=WSH.Arguments.Named.Item("GetSmotrimData")){var duration = "", s = "", is
         }
     }
     if(is_debug)fso.CreateTextFile("smotrim_json.txt", true, true).Write(s);
-    if(new_url && id && json_url && duration)WSH.echo(new_url + "," + id + "," + json_url.slice(16) + "," + duration);
+    if(new_url && id && json_url && duration)WSH.echo(new_url + "," + id + "," + json_url.slice(25) + "," + duration);
     if(newText)newText = newText.slice(2).replace(re_process_marks, "$1$2").replace(/(\.{3})\./g, "$1");
 }
 if(WSH.Arguments.Unnamed.Count && (fso.FileExists(fName=WSH.Arguments.Unnamed(0)) || newText)){
