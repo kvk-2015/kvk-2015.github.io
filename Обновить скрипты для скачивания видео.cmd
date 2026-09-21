@@ -17,7 +17,7 @@ call :update_file "Monitor2-2013/refs/heads/main/Video processing/Оглавле
 ::call :update_file Descript.ion
 exit /b
 ::  Если вам будут мной предоставлены в рамках технической поддержки индивидуально настроенные под ваши потребности скрипты,
-:: обновить их можно будет при помощи https://download.kde.org/stable/kdiff3/ Методику или сами найдёте, или я подскажу...
+:: обновить их можно будет при помощи https://cdn.kde.org/ci-builds/sdk/kdiff3/master/windows/ Методику или сами найдёте, или я подскажу...
 :update_file
 set head=%2
 set is_url=
