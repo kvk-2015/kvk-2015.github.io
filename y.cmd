@@ -13,7 +13,7 @@ setlocal
 :: Автор скрипта не несёт ответственности за его неправомерное использование.
 :: Значение имеет только последняя версия скрипта. Вся история изменений
 :: содержимого GitHub Pages публично доступна через git log.
-set VideoURL=https://smotrim.ru/brand/75759#playing_video=6069963
+set VideoURL=https://vkvideo.ru/live-127058105_456239780
 set head=
 set suffix=
 set series=%%(series)s. 
@@ -23,6 +23,7 @@ set enable_format_recommendations=1
 set test_prev_downloaded=1
 set extension=mkv
 set AppPath=D:\kvk\Utilities\GitHub\yt-dlp\yt-dlp.cmd
+set VideoURL=%VideoURL:vkvideo.ru/live-=vkvideo.ru/video-%
 if not exist %AppPath% set AppPath=yt-dlp.exe
 if not -%1- == -- (set format=%1 & set enable_format_recommendations=0)
 set tempFileName=%random%.tmp
@@ -64,14 +65,17 @@ cscript /nologo /e:javascript "%~dpnx0" "%filename%"
 call %AppPath% --socket-timeout 45 --print "<%%%%(webpage_url_domain)s:%%%%(uploader)s>" %%VideoURL%% >> "%filename%"
 cscript /nologo /e:javascript "%~dpnx0" "%filename%" /toUTF-8:1
 echo.>> "%filename%"
-call :size "%filename%"
+setlocal enabledelayedexpansion
+set right_filename_to_call=!filename:%%=%%%%!
+setlocal disabledelayedexpansion
+call :size "%right_filename_to_call%"
 set tempsize=%filesize%
 call %AppPath% --socket-timeout 45 --print formats_table %%VideoURL%% >> "%filename%"
 if not errorlevel 0 exit /b
-call :size "%filename%"
+call :size "%right_filename_to_call%"
 if %tempsize% == %filesize% exit /b
 for /f %%i in ('cscript /nologo /e:javascript "%~dpnx0" "%filename%" /FORMATRECOMMENDATIONS:%enable_format_recommendations%') do if defined enable_format_recommendations if "%enable_format_recommendations%" == "1" if not "%%i" == "" set format=%%i
-if %test_prev_downloaded% == 1 call :is_prev_downloaded "%filename%"
+if %test_prev_downloaded% == 1 call :is_prev_downloaded "%right_filename_to_call%"
 if -%1- == ---- exit /b
 rem --limit-rate 8.5M
 start "yt-dlp: %VideoURL%" %AppPath% -k -o "%template%" --split-chapters --postprocessor-args "SplitChapters+ffmpeg:-map_metadata -1" --video-multistreams --audio-multistreams --windows-filenames --remux-video %extension% --concurrent-fragments 10 --socket-timeout 45 --abort-on-unavailable-fragment --exec "pause " --embed-metadata --format %format% %VideoURL% ^&exit/b
@@ -134,7 +138,7 @@ if(WSH.Arguments.Unnamed.Count && (fso.FileExists(fName=WSH.Arguments.Unnamed(0)
 if(1*WSH.Arguments.Named.Item("FORMATRECOMMENDATIONS") && newText){
     var lines = newText.split("\r\n"), recommended_audio_format = "", recommended_video_format = "", recommended_format = "";
     var audio_regexp = "", video_regexp = "", regexp = "", page_specific = {
-        "AM_Live,interviews_on_vkvideo":[/:\/\/vkvideo\.ru\/video-(?:21732035|20648295|35758136|223018263)_/,
+        "AM_Live,interviews_on_vkvideo":[/:\/\/vkvideo\.ru\/video-(?:21732035|20648295|35758136|223018263|127058105)_/,
                                         /(^hls\S+_2\D\S*)\s/, /(^hls\S+)\s.+\D[14-9]\d{2,3}x\d+\s+(?:2[45]|30) \|/],
         "vkvideo.ru:Mobile-Review.com": [/<vkvideo\.ru:Mobile-Review\.com>/, /(^hls\S+_2\D\S*)\s/, /(^hls\S+)\s.+1920x1080\s+25 \|/],
         "rutube.ru:Константин Кулаков": [/<rutube\.ru:Константин Кулаков>/, /(^default-\S+)\s/]
