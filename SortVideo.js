@@ -1,11 +1,16 @@
-﻿var fso = new ActiveXObject("Scripting.FileSystemObject"), WshShell = new ActiveXObject("WScript.Shell");
+﻿// SortVideo.js — утилита для сортировки видеофайлов в текущей папке.
+// Создаёт подпапки bySize, byDateLastModified, byID с хардлинками
+// (без копирования). Работает только с локальными файлами.
+// Демонстрация применения скрипта в ВК Видео моего Сообщества: https://vkvideo.ru/video-225923287_456239036
+// и на RUTUBE: https://rutube.ru/video/16e5b6adaf0089f114d2241048a2e618/
+var fso = new ActiveXObject("Scripting.FileSystemObject"), WshShell = new ActiveXObject("WScript.Shell");
 var fn, fc = new Enumerator(fso.GetFolder(".").files);
 var list = [], processed_list = [], order = [{"name": "bySize", "pos": 0}, {"name": "byDateLastModified", "pos": 1}, {"name": "byID", "pos": 2}];
 for(;!fc.atEnd();fc.moveNext())list.push(fc.item().Name);
 for(listIndex in list){
     list_item = list[listIndex];
     if(fso.FileExists(fn=list_item) && /^(?:ts|mkv|mov|mp4)$/.test(fso.GetExtensionName(fn))){
-        fc = fso.GetFile(list_item); 
+        fc = fso.GetFile(list_item);
         processed_list.push([fn, [fc.Size, fc.DateLastModified, list_item.replace(/^.+\[\+?([^\]]+)\].*$/, "$1")]]);
     }
 }
