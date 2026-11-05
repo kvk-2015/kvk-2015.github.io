@@ -4,7 +4,7 @@ var list = [], processed_list = [], order = [{"name": "bySize", "pos": 0}, {"nam
 for(;!fc.atEnd();fc.moveNext())list.push(fc.item().Name);
 for(listIndex in list){
     list_item = list[listIndex];
-    if(fso.FileExists(fn=list_item) && /^ts|mkv|mov|mp4$/.test(fso.GetExtensionName(fn))){
+    if(fso.FileExists(fn=list_item) && /^(?:ts|mkv|mov|mp4)$/.test(fso.GetExtensionName(fn))){
         fc = fso.GetFile(list_item); 
         processed_list.push([fn, [fc.Size, fc.DateLastModified, list_item.replace(/^.+\[\+?([^\]]+)\].*$/, "$1")]]);
     }
