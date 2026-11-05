@@ -27,6 +27,7 @@ call :update_file "Обновить скрипты для скачивания �
 :: test_prev_downloaded=0 (сброс флага проверки) и extension=mp4 (формат контейнера).
 call :update_file y.cmd /coding:Windows-1251 /rep:"^(set test_prev_downloaded=)1$`$10;(^set extension=)\S+$`$1mp4"
 call :update_file "Monitor2-2013/refs/heads/main/Video processing/Оглавление.js" https://raw.githubusercontent.com/kvk-2015 /coding:Windows-1251
+call :update_file SortVideo.js
 ::call :update_file Search.js
 :: Интеграция с Far Manager, если файл настроек поместить по адресу, обозначенному в описании, это будет Пользовальтельское меню
 ::call :update_file FarMenu.ini
