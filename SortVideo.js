@@ -3,14 +3,17 @@
 // (без копирования). Работает только с локальными файлами.
 // Демонстрация применения скрипта в ВК Видео моего Сообщества: https://vkvideo.ru/video-225923287_456239036
 // и на RUTUBE: https://rutube.ru/video/16e5b6adaf0089f114d2241048a2e618/
-var fso = new ActiveXObject("Scripting.FileSystemObject"), WshShell = new ActiveXObject("WScript.Shell");
+var fso = new ActiveXObject("Scripting.FileSystemObject"), WshShell = new ActiveXObject("WScript.Shell"), z = (new Array(15)).join("0");
 var fn, fc = new Enumerator(fso.GetFolder(".").files);
 var list = [], order = [{"name": "bySize", "pos": 0}, {"name": "byDateLastModified", "pos": 1}, {"name": "byID", "pos": 2}];
 for(;!fc.atEnd();fc.moveNext())if(/^(?:ts|mkv|mov|mp4)$/.test(fso.GetExtensionName(fn=fc.item().Name)))list.push([fn, []]);
 for(listIndex in list){
     list_item = list[listIndex];
     if(fso.FileExists(fn=list_item[0])){fc = fso.GetFile(fn);
-        list_item[1].push(fc.Size, fc.DateLastModified, parseInt(fn.replace(/^.+\[[+\-]?([^\]]+)\].*$/, "$1").replace(/[_]/g, ""), 10) || RegExp.$1);
+        ID = fn.replace(/^.+\[[+\-]?([^\]]+)\].*$/, "$1");
+        if(/^\d+$/.test(ID))ID = (z + parseInt(ID, 10)).slice(-12);
+        else ID = ID.replace(/(\d+_\d+)|([a-f\d]{32})/, "!$1$2");
+        list_item[1].push(fc.Size, fc.DateLastModified, ID);
     }
 }
 for(orderIndex in order){
