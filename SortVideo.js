@@ -10,9 +10,9 @@ for(;!fc.atEnd();fc.moveNext())if(/^(?:ts|mkv|mov|mp4)$/.test(fso.GetExtensionNa
 for(listIndex in list){
     list_item = list[listIndex];
     if(fso.FileExists(fn=list_item[0])){fc = fso.GetFile(fn);
-        ID = fn.replace(/^.+\[[+\-]?([^\]]+)\].*$/, "$1");
+        ID = fn.replace(/^.+\[\+?([^\]]+)\].*$/, "$1");
         if(/^\d+$/.test(ID))ID = (z + parseInt(ID, 10)).slice(-12);
-        else ID = ID.replace(/(\d+_\d+)|([a-f\d]{32})/, "!$1$2");
+        else ID = ID.replace(/^(?:(-\d+_\d+)|([a-f\d]{32})|([\da-zA-Z_\-]{11}))$/, "!$1!$2!$3");
         list_item[1].push(fc.Size, fc.DateLastModified, ID);
     }
 }
